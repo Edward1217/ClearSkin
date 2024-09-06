@@ -8,7 +8,7 @@ const cors = require("cors");
 const mongoose = require("mongoose").set("strictQuery", true);
 const middleware = require("./utils/middleware");
 const bodyParser = require("body-parser");
-
+const usersRouter = require("./controllers/user");
 
 mongoose.set("strictQuery",false);
 
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(middleware.requestLogger);
 
-
+app.use("/api/users", usersRouter);
 
 app.use(middleware.unknownEndPoint);
 app.use(middleware.errorHandler);
