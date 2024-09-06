@@ -34,24 +34,18 @@ export default function SignUp() {
             }
             setLoading(false);
             setError(null);
-            navigate('/sign-in');
+            navigate('/');
         } catch (error) {
             setLoading(false);
             setError(error.message);
         }
     };
-
+    console.log(formData)
     return (
         <div className="px-3 py-3 mx-auto w-50">
             <h1 className="fs-3 fw-bold text-center my-5">Sign In</h1>
             <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
-                <input
-                    type="text"
-                    placeholder="username"
-                    className="form-control"
-                    id="username"
-                    onChange={handleChange}
-                />
+
                 <input
                     type="email"
                     placeholder="email"
