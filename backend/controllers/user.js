@@ -5,23 +5,25 @@ const User = require("../models/user");
 usersRouter.get("/", async (request, response) => {
     const users = await User
         .find({})
-      //  .populate("shows",{ url:1,title:1,genre:1,id:1 });
+    //  .populate("shows",{ url:1,title:1,genre:1,id:1 });
     response.json(users);
 });
 
 usersRouter.post("/", async (request, response) => {
     const { username, name, password } = request.body;
-    if (!username || username.length < 3) {
-        return response.status(400).json({ error: "username must be at least 3 characters long" });
+
+    // Check if username (email) is provided and is in valid email format
+    if (!username || !/^\S+@\S+\.\S+$/.test(username)) {
+        return response.status(400).json({ error: "A valid email address is required" });
     }
 
-    if(!password || password.length < 3){
-        return response.status(400).json({ error: "password must be at least 3 characters long" });
+    if (!password || password.length < 3) {
+        return response.status(400).json({ error: "Password must be at least 3 characters long" });
     }
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-        return response.status(400).json({ error: "username already taken" });
+        return response.status(400).json({ error: "Email already in use" });
     }
 
     const saltRounds = 10;
