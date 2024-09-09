@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function SignUp() {
     const [formData, setFormData] = useState({});
@@ -18,7 +19,7 @@ export default function SignUp() {
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await fetch('/api/auth/signup', {
+            const res = await fetch('api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,23 +41,24 @@ export default function SignUp() {
             setError(error.message);
         }
     };
+    console.log(formData)
 
     return (
         <div className="px-3 py-3 mx-auto w-50">
             <h1 className="fs-3 fw-bold text-center my-5">Sign Up</h1>
             <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <input
-                    type="text"
-                    placeholder="username"
+                    type="email"
+                    placeholder="email"
                     className="form-control"
                     id="username"
                     onChange={handleChange}
                 />
                 <input
-                    type="email"
-                    placeholder="email"
+                    type="text"
+                    placeholder="name"
                     className="form-control"
-                    id="email"
+                    id="name"
                     onChange={handleChange}
                 />
                 <input
@@ -84,5 +86,6 @@ export default function SignUp() {
         </div>
     );
 }
+
 
 
