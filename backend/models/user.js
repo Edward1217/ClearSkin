@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         minLength: 3,
-        match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address'] // 使用正则表达式验证 email 格式
+        match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
     },
     name: String,
     passwordHash: String,
