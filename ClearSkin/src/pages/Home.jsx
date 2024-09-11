@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-
+import img1 from  './images/skin2.jpg'
 export default function Home() {
     const [city, setCity] = useState(null);
     const [error, setError] = useState(null);
@@ -40,9 +39,13 @@ export default function Home() {
             <div className="container pt-5">
                 <div className="row g-5 pt-5">
                     <div className="col-lg-6 align-self-center text-center text-lg-start mb-lg-5">
-                        <div className="btn btn-sm border rounded-pill text-white px-3 mb-3 animated slideInRight">AI.Tech</div>
-                        <h1 className="display-4 text-white mb-4 animated slideInRight">Artificial Intelligence for Your Business</h1>
-                        <p className="text-white mb-4 animated slideInRight">Location-based AI services for your business.</p>
+                        <div
+                            className="btn btn-sm border rounded-pill text-white px-3 mb-3 animated slideInRight">AI.Tech
+                        </div>
+                        <h1 className="display-4 text-white mb-4 animated slideInRight">Artificial Intelligence for Your
+                            Business</h1>
+                        <p className="text-white mb-4 animated slideInRight">Location-based AI services for your
+                            business.</p>
 
                         {/* Display the city name if available, otherwise show errors */}
                         {city ? (
@@ -52,6 +55,10 @@ export default function Home() {
                         ) : (
                             <p className="text-white">Fetching your city...</p>
                         )}
+                    </div>
+
+                    <div className="col-lg-6 align-self-center text-center">
+                        <img src={img1} alt="123" style={{width: "100%", height: "auto"}}/>
                     </div>
                 </div>
             </div>
