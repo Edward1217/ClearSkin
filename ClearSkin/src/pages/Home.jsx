@@ -1,24 +1,28 @@
-
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 
 export default function Home() {
     const [city, setCity] = useState(null);
     const [error, setError] = useState(null);
+    const [userName, setUserName] = useState(null);  // State to hold the user's name
 
     useEffect(() => {
+        // Check if the user is logged in by looking for the user's name in localStorage
+        const storedName = localStorage.getItem('name');
+        if (storedName) {
+            setUserName(storedName);
+        }
+
+        // Fetch user's location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     const { latitude, longitude } = position.coords;
 
                     try {
-                        // Send the latitude and longitude to the backend to get the city name
                         const response = await axios.get('/api/location', {
                             params: { latitude, longitude }
                         });
-
-                        // Set the city name from the response
                         setCity(response.data.city);
                     } catch (error) {
                         console.error("Error fetching city name:", error);
@@ -51,6 +55,13 @@ export default function Home() {
                             <p className="text-danger">{error}</p>
                         ) : (
                             <p className="text-white">Fetching your city...</p>
+                        )}
+
+                        {/* Conditionally render the user's name or SignIn button */}
+                        {userName ? (
+                            <p className="text-white">Welcome, {userName}!</p>
+                        ) : (
+                            <a href="/sign-in" className="btn btn-primary">Sign In</a>
                         )}
                     </div>
                 </div>
