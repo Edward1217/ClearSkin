@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import loginService from '../services/login'; // Assume you have a service to handle login requests
+import loginService from '../services/login';
 import { UserContext } from '../context/UserContext.jsx'; // Import UserContext
 
 const SignIn = () => {
@@ -20,7 +20,7 @@ const SignIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
+        setError(null); // Reset error state
 
         try {
             const data = await loginService.login({ email: formData.email, password: formData.password });
@@ -45,29 +45,37 @@ const SignIn = () => {
     };
 
     return (
-        <div>
-            <h1>Sign In</h1>
-            <form onSubmit={handleSubmit}>
+        <div className="px-3 py-3 mx-auto w-50">
+            <h1 className="fs-3 fw-bold text-center my-5">Sign In</h1>
+            <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <input
                     type="email"
-                    id="email"
                     placeholder="Email"
+                    className="form-control"
+                    id="email"
                     onChange={handleChange}
                     required
                 />
                 <input
                     type="password"
-                    id="password"
                     placeholder="Password"
+                    className="form-control"
+                    id="password"
                     onChange={handleChange}
                     required
                 />
-                <button type="submit" disabled={loading}>
+                <button
+                    disabled={loading}
+                    className="btn btn-primary"
+                >
                     {loading ? 'Loading...' : 'Sign In'}
                 </button>
             </form>
-            {error && <p>{error}</p>}
-            <Link to="/sign-up">Sign Up</Link>
+            {error && <p className="text-danger mt-5">{error}</p>}
+            <div className="d-flex gap-2 mt-5">
+                <p>Don't have an account?</p>
+                <Link to={'/sign-up'}><span className="text-primary">Sign Up</span></Link>
+            </div>
         </div>
     );
 };
