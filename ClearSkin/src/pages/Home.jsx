@@ -61,12 +61,6 @@ export default function Home() {
                             <p className="text-white">Fetching your city...</p>
                         )}
 
-                        {/* Conditionally render the user's name or SignIn button */}
-                        {userName ? (
-                            <p className="text-white">Welcome, {userName}!</p>
-                        ) : (
-                            <a href="/sign-in" className="btn btn-primary">Sign In</a>
-                        )}
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
