@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 export default function SignUp() {
     const [formData, setFormData] = useState({});
@@ -17,31 +16,28 @@ export default function SignUp() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null); // Reset error state
         try {
             setLoading(true);
-            const res = await fetch('api/users', {
+            const res = await fetch('/api/users', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
             const data = await res.json();
-            console.log(data);
-            if (data.success === false) {
+
+            if (data.error) {
                 setLoading(false);
-                setError(data.message);
+                setError(data.error);
                 return;
             }
             setLoading(false);
-            setError(null);
             navigate('/sign-in');
         } catch (error) {
             setLoading(false);
             setError(error.message);
         }
     };
-    console.log(formData)
 
     return (
         <div className="px-3 py-3 mx-auto w-50">
@@ -53,6 +49,7 @@ export default function SignUp() {
                     className="form-control"
                     id="username"
                     onChange={handleChange}
+                    required
                 />
                 <input
                     type="text"
@@ -60,6 +57,7 @@ export default function SignUp() {
                     className="form-control"
                     id="name"
                     onChange={handleChange}
+                    required
                 />
                 <input
                     type="password"
@@ -67,8 +65,8 @@ export default function SignUp() {
                     className="form-control"
                     id="password"
                     onChange={handleChange}
+                    required
                 />
-
                 <button
                     disabled={loading}
                     className="btn btn-primary"
@@ -76,13 +74,11 @@ export default function SignUp() {
                     {loading ? 'Loading...' : 'Sign Up'}
                 </button>
             </form>
+            {error && <p className="text-danger mt-5">{error}</p>}
             <div className="d-flex gap-2 mt-5">
                 <p>Have an account?</p>
-                <Link to={'/sign-in'}>
-                    <span className="text-primary">Sign in</span>
-                </Link>
+                <Link to={'/sign-in'}><span className="text-primary">Sign in</span></Link>
             </div>
-            {error && <p className="text-danger mt-5">{error}</p>}
         </div>
     );
 }
