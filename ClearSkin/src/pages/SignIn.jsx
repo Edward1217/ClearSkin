@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import loginService from '../services/login';
+import userService from '../services/userService'; // Import userService
 import { UserContext } from '../context/UserContext.jsx'; // Import UserContext
 
 const SignIn = () => {
@@ -23,7 +23,7 @@ const SignIn = () => {
         setError(null); // Reset error state
 
         try {
-            const data = await loginService.login({ email: formData.email, password: formData.password });
+            const data = await userService.login({ email: formData.email, password: formData.password }); // Use login from userService
 
             if (data.token) {
                 // Store user info in localStorage
