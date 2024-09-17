@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import userService from '../services/userService'; // Import the user service
 
 export default function SignUp() {
     const [formData, setFormData] = useState({});
@@ -14,24 +15,20 @@ export default function SignUp() {
         });
     };
 
+    const handleRoleChange = (e) => {
+        setFormData({
+            ...formData,
+            role: e.target.value, // Capture the role in formData
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null); // Reset error state
-        try {
-            setLoading(true);
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-            const data = await res.json();
+        setLoading(true);
 
-            if (data.error) {
-                setLoading(false);
-                setError(data.error);
-                return;
-            }
+        try {
+            const data = await userService.signUp(formData); // Call the signup service
             setLoading(false);
             navigate('/sign-in');
         } catch (error) {
@@ -39,14 +36,14 @@ export default function SignUp() {
             setError(error.message);
         }
     };
-    console.log(formData)
+
     return (
         <div className="px-3 py-3 mx-auto w-50">
             <h1 className="fs-3 fw-bold text-center my-5">Sign Up</h1>
             <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
                 <input
                     type="email"
-                    placeholder="email"
+                    placeholder="Email"
                     className="form-control"
                     id="username"
                     onChange={handleChange}
@@ -54,7 +51,7 @@ export default function SignUp() {
                 />
                 <input
                     type="text"
-                    placeholder="name"
+                    placeholder="Name"
                     className="form-control"
                     id="name"
                     onChange={handleChange}
@@ -62,7 +59,7 @@ export default function SignUp() {
                 />
                 <input
                     type="password"
-                    placeholder="password"
+                    placeholder="Password"
                     className="form-control"
                     id="password"
                     onChange={handleChange}
@@ -70,7 +67,7 @@ export default function SignUp() {
                 />
                 <select
                     className="form-control"
-                    // Handle role selection
+                    onChange={handleRoleChange} // Capture role change
                     required
                 >
                     <option value="">Select Role</option>
