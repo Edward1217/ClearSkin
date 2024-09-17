@@ -14,6 +14,7 @@ export default function SignUp() {
         });
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null); // Reset error state
@@ -38,7 +39,7 @@ export default function SignUp() {
             setError(error.message);
         }
     };
-
+    console.log(formData)
     return (
         <div className="px-3 py-3 mx-auto w-50">
             <h1 className="fs-3 fw-bold text-center my-5">Sign Up</h1>
@@ -67,6 +68,15 @@ export default function SignUp() {
                     onChange={handleChange}
                     required
                 />
+                <select
+                    className="form-control"
+                    // Handle role selection
+                    required
+                >
+                    <option value="">Select Role</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="patient">Patient</option>
+                </select>
                 <button
                     disabled={loading}
                     className="btn btn-primary"
