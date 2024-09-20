@@ -53,18 +53,58 @@ export default function Home() {
                             business.</p>
 
                         {/* Display the city name if available, otherwise show errors */}
-                        {city ? (
-                            <p className="text-white">Your current city: {city}</p>
-                        ) : error ? (
-                            <p className="text-danger">{error}</p>
-                        ) : (
-                            <p className="text-white">Fetching your city...</p>
-                        )}
+                        {/*{city ? (*/}
+                        {/*    <p className="text-white">Your current city: {city}</p>*/}
+                        {/*) : error ? (*/}
+                        {/*    <p className="text-danger">{error}</p>*/}
+                        {/*) : (*/}
+                        {/*    <p className="text-white">Fetching your city...</p>*/}
+                        {/*)}*/}
 
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
                         <img src={img1} alt="123" style={{width: "100%", height: "auto"}}/>
+                    </div>
+                    <div className="row g-4 mt-5">
+                        <div className="col-md-4">
+                            <div className="card bg-light">
+                                <div className="card-body text-center">
+                                    <h5 className="card-title">City</h5>
+                                    <p className="card-text">
+                                        {/* Display the city name if available, otherwise show errors */}
+                                        {city ? (
+                                            <p className="text-black">Your current city: {city}</p>
+                                        ) : error ? (
+                                            <p className="text-danger">{error}</p>
+                                        ) : (
+                                            <p className="text-white">Fetching your city...</p>
+                                        )}
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div className="card bg-light">
+                                <div className="card-body text-center">
+                                    <h5 className="card-title">Weather</h5>
+                                    <p className="card-text">
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-4">
+                            <div className="card bg-light">
+                                <div className="card-body text-center">
+                                    <h5 className="card-title">Block 3</h5>
+                                    <p className="card-text">
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
