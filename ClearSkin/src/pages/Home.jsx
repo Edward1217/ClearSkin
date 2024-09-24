@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import locationService from '../services/locationService';  // 服务获取位置
 import weatherService from '../services/weatherService';   // 服务获取天气
 import img1 from './images/skin2.jpg';
-
+import {storage} from './firebase.js';
+import {ref,uploadBytes,listAll,getDownloadURL} from "firebase/storage";
+import {v4} from 'uuid';
+import CameraCapture from "./CameraCapture.jsx";
 export default function Home() {
     const [city, setCity] = useState(null);
     const [weather, setWeather] = useState({ condition: null, uv: null, icon: null, temp_c: null });
     const [error, setError] = useState(null);
-
+    const [imageUpload,setImageUpload] = useState(null);
+    const [imageList,setImageList] = useState([])
     useEffect(() => {
         const fetchLocationAndWeather = async () => {
             try {
@@ -35,7 +39,23 @@ export default function Home() {
 
         fetchLocationAndWeather();
     }, []);
-
+    const imageListRef = ref(storage,"images/")
+    function uploadImage () {
+        if (imageUpload === null ) return;
+        const imageRef = ref(storage,`images/${imageUpload.name + v4()}`);
+        uploadBytes(imageRef,imageUpload).then(()=>{
+            alert("Image Uploaded")
+        });
+    }
+    useEffect(()=>{
+        listAll(imageListRef).then((response) => {
+            response.items.forEach((item)=>{
+                getDownloadURL(item).then((url)=>{
+                    setImageList((prev)=>[...prev,url]);
+                })
+            })
+        })
+    },[])
     return (
         <div className="container-fluid bg-primary hero-header mb-5">
             <div className="container pt-5">
@@ -58,10 +78,29 @@ export default function Home() {
                         ) : (
                             <p className="text-white">Fetching your city...</p>
                         )}
+
+
+                        <div>
+                            <div>
+                                <h5>Upload or take photos of your skin condition</h5>
+                            </div>
+                            <div className="input-group mb-3">
+
+                                <input type="file" className="form-control" id="inputGroupFile02" onChange={(event) => {
+                                    setImageUpload(event.target.files[0])
+                                }}/>
+                                <button className="input-group-text" htmlFor="inputGroupFile02"
+                                        onClick={uploadImage}>Upload
+                                </button>
+
+                            </div>
+                        </div>
+
+
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
-                        <img src={img1} alt="123" style={{ width: "100%", height: "auto" }} />
+                        <img src={img1} alt="123" style={{width: "100%", height: "auto"}}/>
                     </div>
 
                     <div className="row g-4 mt-5">
@@ -92,7 +131,7 @@ export default function Home() {
                                                 <p className="text-black">Condition: {weather.condition}</p>
                                                 <p className="text-black">UV Index: {weather.uv}</p>
                                                 {weather.icon && (
-                                                    <img src={weather.icon} alt="Weather Icon" />
+                                                    <img src={weather.icon} alt="Weather Icon"/>
                                                 )}
                                             </>
                                         ) : error ? (
@@ -121,6 +160,10 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div>
+                        <h1>Capture Photo with Webcam</h1>
+                        <CameraCapture/>
                     </div>
                 </div>
             </div>
