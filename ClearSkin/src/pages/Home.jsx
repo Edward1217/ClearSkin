@@ -1,35 +1,29 @@
 import React, { useEffect, useState } from "react";
-import locationService from '../services/locationService';  // 服务获取位置
-import weatherService from '../services/weatherService';   // 服务获取天气
+import locationService from '../services/locationService';
+import weatherService from '../services/weatherService';
 import img1 from './images/skin2.jpg';
-import {storage} from './firebase.js';
-import {ref,uploadBytes,listAll,getDownloadURL} from "firebase/storage";
-import {v4} from 'uuid';
-import CameraCapture from "./CameraCapture.jsx";
+import CameraCapture from "./CameraCapture";
+import ImageUploader from '../components/ImageUploader'; // Import your ImageUploader component
+
 export default function Home() {
     const [city, setCity] = useState(null);
     const [weather, setWeather] = useState({ condition: null, uv: null, icon: null, temp_c: null });
     const [error, setError] = useState(null);
-    const [imageUpload,setImageUpload] = useState(null);
-    const [imageList,setImageList] = useState([])
+    const [capturedPhoto, setCapturedPhoto] = useState(null);  // State for captured photo
+
     useEffect(() => {
         const fetchLocationAndWeather = async () => {
             try {
-                // 获取城市数据
                 const locationResponse = await locationService.getLocation();
                 const cityName = locationResponse.city;
                 setCity(cityName);
 
-                // 获取天气数据
                 const weatherResponse = await weatherService.getWeather(cityName);
-                console.log('Weather Response:', weatherResponse); // 调试输出天气数据
-
-                // 设置天气状态，确保 icon 是完整的 URL
                 setWeather({
                     condition: weatherResponse.condition,
                     uv: weatherResponse.uv,
-                    icon: `http:${weatherResponse.icon}`,  // 完整的图标URL
-                    temp_c: weatherResponse.temp_c // 获取摄氏温度
+                    icon: `http:${weatherResponse.icon}`,
+                    temp_c: weatherResponse.temp_c
                 });
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -39,23 +33,12 @@ export default function Home() {
 
         fetchLocationAndWeather();
     }, []);
-    const imageListRef = ref(storage,"images/")
-    function uploadImage () {
-        if (imageUpload === null ) return;
-        const imageRef = ref(storage,`images/${imageUpload.name + v4()}`);
-        uploadBytes(imageRef,imageUpload).then(()=>{
-            alert("Image Uploaded")
-        });
-    }
-    useEffect(()=>{
-        listAll(imageListRef).then((response) => {
-            response.items.forEach((item)=>{
-                getDownloadURL(item).then((url)=>{
-                    setImageList((prev)=>[...prev,url]);
-                })
-            })
-        })
-    },[])
+
+    // Handle captured photo from CameraCapture
+    const handleCapture = (photo) => {
+        setCapturedPhoto(photo);  // Store captured photo in state
+    };
+
     return (
         <div className="container-fluid bg-primary hero-header mb-5">
             <div className="container pt-5">
@@ -79,28 +62,14 @@ export default function Home() {
                             <p className="text-white">Fetching your city...</p>
                         )}
 
-
                         <div>
-                            <div>
-                                <h5>Upload or take photos of your skin condition</h5>
-                            </div>
-                            <div className="input-group mb-3">
-
-                                <input type="file" className="form-control" id="inputGroupFile02" onChange={(event) => {
-                                    setImageUpload(event.target.files[0])
-                                }}/>
-                                <button className="input-group-text" htmlFor="inputGroupFile02"
-                                        onClick={uploadImage}>Upload
-                                </button>
-
-                            </div>
+                            <h5>Upload or take photos of your skin condition</h5>
+                            <ImageUploader capturedImage={capturedPhoto} />  {/* Pass captured photo to ImageUploader */}
                         </div>
-
-
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
-                        <img src={img1} alt="123" style={{width: "100%", height: "auto"}}/>
+                        <img src={img1} alt="Skin Condition Example" style={{ width: "100%", height: "auto" }} />
                     </div>
 
                     <div className="row g-4 mt-5">
@@ -131,7 +100,7 @@ export default function Home() {
                                                 <p className="text-black">Condition: {weather.condition}</p>
                                                 <p className="text-black">UV Index: {weather.uv}</p>
                                                 {weather.icon && (
-                                                    <img src={weather.icon} alt="Weather Icon"/>
+                                                    <img src={weather.icon} alt="Weather Icon" />
                                                 )}
                                             </>
                                         ) : error ? (
@@ -161,9 +130,10 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
+
                     <div>
                         <h1>Capture Photo with Webcam</h1>
-                        <CameraCapture/>
+                        <CameraCapture onCapture={handleCapture} /> {/* Pass handleCapture to CameraCapture */}
                     </div>
                 </div>
             </div>

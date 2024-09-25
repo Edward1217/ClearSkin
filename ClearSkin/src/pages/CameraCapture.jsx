@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react'; // Make sure to import useEffect
 
-const CameraCapture = () => {
+const CameraCapture = ({ onCapture }) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const [hasPhoto, setHasPhoto] = useState(false);
 
-    // Start the camera stream when the component mounts
+    // Start the camera stream
     useEffect(() => {
         const startCamera = async () => {
             try {
@@ -34,7 +34,12 @@ const CameraCapture = () => {
         let ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, width, height);
 
+        // Get image data from canvas
+        const photoData = canvas.toDataURL('image/png');
         setHasPhoto(true);
+
+        // Pass the captured image data to the parent component (e.g., ImageUploader)
+        onCapture(photoData);
     };
 
     // Close the photo preview
