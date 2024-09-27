@@ -1,24 +1,34 @@
 import axios from 'axios';
 
-// Function to save image URL to backend
+// imageService.js
 const uploadImageUrl = async (imageUrl) => {
     try {
-        const token = localStorage.getItem('token'); // Get JWT token from localStorage
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`, // Send the token in headers
-                'Content-Type': 'application/json',
-            },
-        };
+        const token = localStorage.getItem('token');
 
-        const response = await axios.post('/api/image', { imageUrl }, config);
-        return response.data; // Return the response from backend
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+
+        // 正确地将 imageUrl 包装成对象
+        const response = await axios.post('/api/image', { imageUrl }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        return response.data;
     } catch (error) {
-        console.error('Error uploading image URL:', error.response?.data || error.message);
+        if (error.response) {
+            console.error('Error response from server:', error.response.data);
+        } else if (error.request) {
+            console.error('No response received:', error.request);
+        } else {
+            console.error('Error setting up the request:', error.message);
+        }
         throw error;
     }
 };
 
-export default {
-    uploadImageUrl,
-};
+
+export default { uploadImageUrl };

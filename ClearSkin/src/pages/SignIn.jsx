@@ -1,14 +1,14 @@
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import userService from '../services/userService'; // Import userService
-import { UserContext } from '../context/UserContext.jsx'; // Import UserContext
+import userService from '../services/userService';
+import { UserContext } from '../context/UserContext';
 
 const SignIn = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { setUserName } = useContext(UserContext); // Get setUserName from context
+    const { setUser } = useContext(UserContext);
 
     const handleChange = (e) => {
         setFormData({
@@ -17,23 +17,51 @@ const SignIn = () => {
         });
     };
 
+    // Function to manually decode JWT token
+    const decodeJwt = (token) => {
+        try {
+            const base64Url = token.split('.')[1]; // Get the payload part of the JWT
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload); // Parse the payload as JSON
+        } catch (error) {
+            console.error('Error decoding JWT:', error);
+            return null;
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null); // Reset error state
+        setError(null);
 
         try {
-            const data = await userService.login({ email: formData.email, password: formData.password }); // Use login from userService
+            const data = await userService.login({ email: formData.email, password: formData.password });
 
             if (data.token) {
-                // Store user info in localStorage
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('name', data.name);
+                // Manually decode the JWT token
+                const decodedToken = decodeJwt(data.token);
 
-                // Update global user context
-                setUserName(data.name);
+                if (decodedToken) {
+                    // Store the full user info in localStorage
+                    const userInfo = {
+                        id: decodedToken.id, // Extracted from the decoded JWT token
+                        name: data.name,     // From the backend login response
+                    };
 
-                navigate('/'); // Redirect to homepage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(userInfo));
+
+                    // Update UserContext
+                    setUser(userInfo);
+
+                    navigate('/'); // Redirect to the home page
+                } else {
+                    setError('Failed to decode token.');
+                }
             } else {
                 setError('Login failed');
             }
