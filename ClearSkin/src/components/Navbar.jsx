@@ -4,16 +4,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 
 const NavbarComponent = () => {
-    const { userName, setUserName } = useContext(UserContext); // Get userName and setUserName from context
+    const { user, setUser } = useContext(UserContext); // 从上下文中获取 user 和 setUser
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Clear user data from localStorage and context
+        // 清除 localStorage 和上下文中的用户数据
         localStorage.removeItem('token');
-        localStorage.removeItem('name');
-        setUserName(null);
+        localStorage.removeItem('user'); // 改为 'user'，因为我们存储的是 'user' 对象
+        setUser(null);
 
-        // Redirect to home or sign-in page after logout
+        // 注销后重定向到登录页面
         navigate('/sign-in');
     };
 
@@ -28,10 +28,10 @@ const NavbarComponent = () => {
                         <Nav.Link as={Link} to="/about">About</Nav.Link>
                         <Nav.Link as={Link} to="/services">Services</Nav.Link>
 
-                        {userName ? (
+                        {user && user.name ? (
                             <Dropdown alignRight>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                                    Welcome, {userName}
+                                    Welcome, {user.name}
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu>

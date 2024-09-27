@@ -1,50 +1,32 @@
 const express = require('express');
-const Image = require('../models/Image'); // 引入模型
+const Image = require('../models/Image');
+const authMiddleware = require('../utils/authMiddleware');  // Middleware for authentication
 const router = express.Router();
-const authMiddleware = require('../utils/authMiddleware'); // 引入身份验证中间件
 
-// 使用身份验证中间件来确保用户登录
-router.use(authMiddleware);
+router.post('/',async (req, res) => {
+    const { imageUrl } = req.body;  // Only get the imageUrl from the request body
 
-// 保存图片 URL 到数据库，关联用户
-router.post('/images', async (req, res) => {
-    const { imageUrl } = req.body;
+    console.log('Received imageUrl:', imageUrl);
+    console.log('Authenticated user:', req.user);  // Ensure req.user is populated from JWT
 
     if (!imageUrl) {
         return res.status(400).json({ error: 'Image URL is required' });
     }
 
     try {
-        // 获取当前用户的 ID
-        const user = req.user; // 假设 authMiddleware 将用户信息附加到 req 对象
-
-        // 创建新图片，并将当前用户的 ID 关联
+        // Create a new Image instance using user from req.user (extracted from JWT)
         const newImage = new Image({
-            imageUrl,
-            user: user._id // 将当前用户的 ID 关联到图片
+            imageUrl,   // The image URL as a string
+            user: req.user.id,  // Use req.user.id extracted from the JWT token
         });
 
-        await newImage.save();
-        res.status(201).json({ message: 'Image URL saved successfully' });
+        await newImage.save();  // Save to database
+        console.log('Image URL saved to the database');
+
+        res.status(201).json({ message: 'Image URL saved successfully!' });
     } catch (error) {
         console.error('Error saving image URL:', error);
-        res.status(500).json({ error: 'Error saving image URL' });
-    }
-});
-
-// 获取所有图片 URL，并按用户过滤
-router.get('/images', async (req, res) => {
-    try {
-        // 获取当前用户的 ID
-        const user = req.user;
-
-        // 查询与该用户相关联的所有图片
-        const images = await Image.find({ user: user._id }).sort({ createdAt: -1 });  // 按创建时间倒序排列
-
-        res.status(200).json(images);
-    } catch (error) {
-        console.error('Error fetching images:', error);
-        res.status(500).json({ error: 'Error fetching images' });
+        res.status(500).json({ error: 'Server error while saving image URL' });
     }
 });
 
