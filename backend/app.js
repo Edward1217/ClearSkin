@@ -7,7 +7,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose").set("strictQuery", true);
 const middleware = require("./utils/middleware");
-const authMiddleware = require('./utils/authMiddleware'); // JWT auth middleware
+const authMiddleware = require('./utils/authMiddleware'); // JWT middleware
 const usersRouter = require("./controllers/user");
 const loginRouter = require("./controllers/login");
 const locationRouter = require("./controllers/location");
@@ -39,7 +39,7 @@ app.use('/api/location', locationRouter); // No JWT required
 app.use('/api/weather', weatherRouter);   // No JWT required
 
 // Protected routes (JWT authentication required)
-app.use('/api/image', authMiddleware, imageRouter); // Only /api/image requires JWT
+app.use('/api/image', authMiddleware, imageRouter); // Apply authMiddleware for /api/image
 
 // Handle unknown endpoints and errors
 app.use(middleware.unknownEndPoint);

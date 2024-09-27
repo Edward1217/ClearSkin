@@ -1,15 +1,18 @@
+// Home.jsx
 import React, { useEffect, useState } from "react";
 import locationService from '../services/locationService';
 import weatherService from '../services/weatherService';
+import { useUser } from '../context/UserContext'; // 引入 UserContext 来获取用户信息
 import img1 from './images/skin2.jpg';
 import CameraCapture from "./CameraCapture";
-import ImageUploader from '../components/ImageUploader'; // Import your ImageUploader component
+import ImageUploader from '../components/ImageUploader';
 
 export default function Home() {
     const [city, setCity] = useState(null);
     const [weather, setWeather] = useState({ condition: null, uv: null, icon: null, temp_c: null });
     const [error, setError] = useState(null);
-    const [capturedPhoto, setCapturedPhoto] = useState(null);  // State for captured photo
+    const [capturedPhoto, setCapturedPhoto] = useState(null);  // 保存拍摄的照片
+    const { user } = useUser(); // 从 UserContext 中获取用户信息
 
     useEffect(() => {
         const fetchLocationAndWeather = async () => {
@@ -34,9 +37,9 @@ export default function Home() {
         fetchLocationAndWeather();
     }, []);
 
-    // Handle captured photo from CameraCapture
+    // 处理拍摄照片
     const handleCapture = (photo) => {
-        setCapturedPhoto(photo);  // Store captured photo in state
+        setCapturedPhoto(photo);  // 将拍摄的照片存储到状态
     };
 
     return (
@@ -54,6 +57,13 @@ export default function Home() {
                             Location-based AI services for your business.
                         </p>
 
+                        {/* 如果用户信息存在，则显示用户名 */}
+                        {user && user.name ? (
+                            <p className="text-white">Welcome, {user.name}!</p>
+                        ) : (
+                            <p className="text-white">Fetching user info...</p>
+                        )}
+
                         {city ? (
                             <p className="text-white">Your current city: {city}</p>
                         ) : error ? (
@@ -64,7 +74,7 @@ export default function Home() {
 
                         <div>
                             <h5>Upload or take photos of your skin condition</h5>
-                            <ImageUploader capturedImage={capturedPhoto} />  {/* Pass captured photo to ImageUploader */}
+                            <ImageUploader capturedImage={capturedPhoto} />  {/* 传递拍摄的照片到 ImageUploader */}
                         </div>
                     </div>
 
@@ -133,7 +143,7 @@ export default function Home() {
 
                     <div>
                         <h1>Capture Photo with Webcam</h1>
-                        <CameraCapture onCapture={handleCapture} /> {/* Pass handleCapture to CameraCapture */}
+                        <CameraCapture onCapture={handleCapture} /> {/* 传递 handleCapture 给 CameraCapture */}
                     </div>
                 </div>
             </div>
