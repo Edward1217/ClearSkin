@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'; // Make sure to import useEffect
+import React, { useRef, useState, useEffect } from 'react';
 
 const CameraCapture = ({ onCapture }) => {
     const videoRef = useRef(null);
@@ -34,12 +34,14 @@ const CameraCapture = ({ onCapture }) => {
         let ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, width, height);
 
-        // Get image data from canvas
-        const photoData = canvas.toDataURL('image/png');
-        setHasPhoto(true);
+        // Convert canvas image to Blob and then to File
+        canvas.toBlob((blob) => {
+            const photoFile = new File([blob], `photo_${Date.now()}.png`, { type: 'image/png' });
+            setHasPhoto(true);
 
-        // Pass the captured image data to the parent component (e.g., ImageUploader)
-        onCapture(photoData);
+            // Pass the captured image file to the parent component
+            onCapture(photoFile);
+        }, 'image/png');
     };
 
     // Close the photo preview
