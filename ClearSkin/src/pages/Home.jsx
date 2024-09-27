@@ -38,8 +38,8 @@ export default function Home() {
     }, []);
 
     // 处理拍摄照片
-    const handleCapture = (photo) => {
-        setCapturedPhoto(photo);  // 将拍摄的照片存储到状态
+    const handleCapture = (photoFile) => {
+        setCapturedPhoto(photoFile);
     };
 
     return (
@@ -74,12 +74,12 @@ export default function Home() {
 
                         <div>
                             <h5>Upload or take photos of your skin condition</h5>
-                            <ImageUploader capturedImage={capturedPhoto} />  {/* 传递拍摄的照片到 ImageUploader */}
+                            <ImageUploader capturedImage={capturedPhoto}/> {/* 传递拍摄的照片到 ImageUploader */}
                         </div>
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
-                        <img src={img1} alt="Skin Condition Example" style={{ width: "100%", height: "auto" }} />
+                        <img src={img1} alt="Skin Condition Example" style={{width: "100%", height: "auto"}}/>
                     </div>
 
                     <div className="row g-4 mt-5">
@@ -110,7 +110,7 @@ export default function Home() {
                                                 <p className="text-black">Condition: {weather.condition}</p>
                                                 <p className="text-black">UV Index: {weather.uv}</p>
                                                 {weather.icon && (
-                                                    <img src={weather.icon} alt="Weather Icon" />
+                                                    <img src={weather.icon} alt="Weather Icon"/>
                                                 )}
                                             </>
                                         ) : error ? (
@@ -143,7 +143,12 @@ export default function Home() {
 
                     <div>
                         <h1>Capture Photo with Webcam</h1>
-                        <CameraCapture onCapture={handleCapture} /> {/* 传递 handleCapture 给 CameraCapture */}
+                        <CameraCapture onCapture={handleCapture}/>
+                    </div>
+
+                    <div>
+                        <h5>Upload or take photos of your skin condition</h5>
+                        <ImageUploader capturedImage={capturedPhoto}/>
                     </div>
                 </div>
             </div>
