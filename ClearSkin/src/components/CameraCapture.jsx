@@ -1,10 +1,21 @@
 import React, { useRef, useState, useEffect } from 'react';
-
+import {storage} from "../firebase/firebase.js";
+import {ref,uploadBytes, getDownloadURL} from "firebase/storage";
+import { v4 } from 'uuid';
 const CameraCapture = ({ onCapture }) => {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const [hasPhoto, setHasPhoto] = useState(false);
-
+    const [imageUpload,setImageUpload] = useState(null);
+    const uploadImage = () => {
+        if (imageUpload == null ) return;
+        const imageRef = ref(storage,`images/${imageUpload.name + v4()}`);
+        uploadBytes(imageRef,imageUpload).then(()=>{
+            alert("Image Uploaded");
+            setImageUpload(null);
+            setHasPhoto(false);
+        });
+    }
     // Start the camera stream
     useEffect(() => {
         const startCamera = async () => {
@@ -39,9 +50,12 @@ const CameraCapture = ({ onCapture }) => {
             const photoFile = new File([blob], `photo_${Date.now()}.png`, { type: 'image/png' });
             setHasPhoto(true);
 
+            setImageUpload(photoFile);
+
             // Pass the captured image file to the parent component
             onCapture(photoFile);
         }, 'image/png');
+
     };
 
     // Close the photo preview
@@ -50,6 +64,7 @@ const CameraCapture = ({ onCapture }) => {
         let ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         setHasPhoto(false);
+        setImageUpload(null);
     };
 
     return (
@@ -61,7 +76,13 @@ const CameraCapture = ({ onCapture }) => {
 
             <div className={'photo-container ' + (hasPhoto ? 'has-photo' : '')}>
                 <canvas ref={canvasRef}></canvas>
-                {hasPhoto && <button onClick={closePhoto}>Close Photo</button>}
+                {hasPhoto &&
+                    <div>
+                        <button onClick={closePhoto}>Close Photo</button>
+                        <button onClick={uploadImage}>Upload Photo</button>
+                    </div>
+
+                }
             </div>
         </div>
     );
