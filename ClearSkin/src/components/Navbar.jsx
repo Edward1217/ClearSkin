@@ -18,7 +18,7 @@ const NavbarComponent = () => {
     };
 
     return (
-        <Navbar sticky="top" bg="dark" variant="dark" expand="lg">
+        <Navbar sticky="top" bg="dark" variant="dark" expand="lg" className="py-3 px-4">
             <Container>
                 <Navbar.Brand as={Link} to="/">Clear Skin</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
