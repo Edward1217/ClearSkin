@@ -4,8 +4,12 @@ import locationService from '../services/locationService';
 import weatherService from '../services/weatherService';
 import { useUser } from '../context/UserContext'; // 引入 UserContext 来获取用户信息
 import img1 from '../images/skin2.jpg';
-import CameraCapture from "./CameraCapture";
+import CameraCapture from "../components/CameraCapture";
 import ImageUploader from '../components/ImageUploader';
+import {ref, uploadBytes} from "firebase/storage";
+import {storage} from "../firebase/firebase.js";
+import {v4} from "uuid";
+
 
 
 export default function Home() {
@@ -14,6 +18,9 @@ export default function Home() {
     const [error, setError] = useState(null);
     const [capturedPhoto, setCapturedPhoto] = useState(null);  // 保存拍摄的照片
     const { user } = useUser(); // 从 UserContext 中获取用户信息
+    const [image, setImage] = useState(null); // State to hold the uploaded image
+    const [imageUpload,setImageUpload] = useState(null);
+    const [uploadStatus, setUploadStatus] = useState("");
 
     useEffect(() => {
         const fetchLocationAndWeather = async () => {
@@ -42,6 +49,28 @@ export default function Home() {
     const handleCapture = (photoFile) => {
         setCapturedPhoto(photoFile);
     };
+
+    const readURL = (event) => {
+        const file = event.target.files[0]; // Get the first file
+        if (file) {
+            const reader = new FileReader(); // Create a new FileReader instance
+            reader.onloadend = () => {
+                setImage(reader.result); // Update state with the image data URL
+
+            };
+            reader.readAsDataURL(file); // Read the file as a data URL
+        }
+        setImageUpload(file)
+    };
+    const uploadImage = () => {
+        if (imageUpload == null ) return;
+        const imageRef = ref(storage,`images/${imageUpload.name + v4()}`);
+        uploadBytes(imageRef,imageUpload).then(()=>{
+            alert("Image Uploaded");
+            setImageUpload(null);
+            setImage(null);
+        });
+    }
 
     return (
         <div className="container-fluid bg-white hero-header mb-5">
@@ -165,33 +194,105 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <div className="row g-5 mt-5">
-                        <div className="col-md-6">
-                            <div>
-                                <div className="card-body text-center">
-                                    <h1>Capture Photo with Webcam</h1>
-                                    <CameraCapture onCapture={handleCapture}/>
+                    {/*<div id="capture from camera">*/}
+                    {/*    <div className="row g-5 mt-5">*/}
+                    {/*        <div className="col-md-6">*/}
+                    {/*            <div>*/}
+                    {/*                <div className="card-body text-center">*/}
+                    {/*                    <h1>Capture Photo with Webcam</h1>*/}
+                    {/*                    <CameraCapture onCapture={handleCapture}/>*/}
+                    {/*                </div>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+
+                    {/*    <div className="col-md-6">*/}
+                    {/*        <div>*/}
+                    {/*            <div className="card-body text-center">*/}
+                    {/*                /!*<h5>Upload or take photos of your skin condition</h5>*!/*/}
+                    {/*                /!*<ImageUploader capturedImage={capturedPhoto}/>*!/*/}
+                    {/*                {capturedPhoto && <ImageUploader capturedImage={capturedPhoto}/>}*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+
+                    {/*<div  id =" upload from local folder" className="container ">*/}
+                    {/*    <header className="text-center card-body">*/}
+                    {/*        <h1>Image Upload</h1>*/}
+                    {/*        <p className="lead mb-4">Upload an image to preview it below.</p>*/}
+                    {/*    </header>*/}
+
+                    {/*    <div className="row">*/}
+                    {/*        <div className="col-lg-6 mx-auto">*/}
+                    {/*            /!* Upload image input *!/*/}
+                    {/*            <div className="input-group mb-3">*/}
+                    {/*                <input*/}
+                    {/*                    id="upload"*/}
+                    {/*                    type="file"*/}
+                    {/*                    onChange={readURL}*/}
+                    {/*                    className="form-control border-0"*/}
+                    {/*                    accept="image/*"*/}
+                    {/*                />*/}
+                    {/*                <div className="input-group-append">*/}
+                    {/*                    <label htmlFor="upload" className="btn btn-primary m-0">Choose File</label>*/}
+                    {/*                </div>*/}
+                    {/*            </div>*/}
+
+                    {/*            /!* Uploaded image area *!/*/}
+
+                    {/*            {image && (*/}
+                    {/*                <div className="image-area mt-4">*/}
+                    {/*                    <h5 className="font-italic">Uploaded Image:</h5>*/}
+                    {/*                    <img*/}
+                    {/*                        src={image}*/}
+                    {/*                        alt="Uploaded"*/}
+                    {/*                        className="img-fluid rounded shadow-sm mx-auto d-block"*/}
+                    {/*                    />*/}
+                    {/*                    <button className="btn btn-success mt-3" onClick={uploadImage}>*/}
+                    {/*                        Upload to Database*/}
+                    {/*                    </button>*/}
+                    {/*                    {uploadStatus && <p className="mt-2">{uploadStatus}</p>}*/}
+                    {/*                </div>*/}
+                    {/*            )}*/}
+
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+                    <div className="container-fluid bg-white hero-header mb-5">
+                        <div className="container">
+                            <div className="row g-5 pt-5">
+                                {/* Other content */}
+                            </div>
+
+                            <div className="row g-5 mt-5">
+                                {/* Place the two sections in the same row */}
+                                <div className="col-md-6" id="capture from camera">
+                                    <div className="card-body text-center">
+                                        <h1>Capture Photo with Webcam</h1>
+                                        <CameraCapture onCapture={handleCapture}/>
+                                    </div>
+                                    <div>
+                                        {capturedPhoto && <ImageUploader capturedImage={capturedPhoto}/>}
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6" id="upload from local folder">
+                                    <header className="text-center card-body">
+                                        <h1>Image Upload</h1>
+                                        <p className="lead mb-4">Upload an image to preview it below.</p>
+                                    </header>
+
+                                    <div className="row">
+                                        <div className="col-lg-12 mx-auto">
+
+                                            <ImageUploader image={image} uploadImage={uploadImage}/>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className="col-md-6">
-                        <div>
-                            <div className="card-body text-center">
-                                {/*<h5>Upload or take photos of your skin condition</h5>*/}
-                                {/*<ImageUploader capturedImage={capturedPhoto}/>*/}
-                                <ImageUploader capturedImage={capturedPhoto}/>
-                            </div>
-                        </div>
-                    </div>
-                    {/* 当 capturedPhoto 存在时才显示 Upload Image 部分 */}
-                    {capturedPhoto && (
-                        <div>
-                            <h5>Upload the photo you have taken</h5>
-                            <ImageUploader capturedImage={capturedPhoto}/>
-                        </div>
-                    )}
 
                 </div>
 
