@@ -13,6 +13,7 @@ const loginRouter = require("./controllers/login");
 const locationRouter = require("./controllers/location");
 const weatherRouter = require("./controllers/weather");
 const imageRouter = require("./controllers/image");
+app.use(express.static('dist'))
 
 mongoose.set("strictQuery", false);
 
