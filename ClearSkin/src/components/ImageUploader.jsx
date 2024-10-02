@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useUser } from '../context/UserContext';
-import { storage } from '../pages/firebase';
+import { storage } from '../firebase/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 import imageService from '../services/imageService';

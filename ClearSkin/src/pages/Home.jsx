@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import locationService from '../services/locationService';
 import weatherService from '../services/weatherService';
 import { useUser } from '../context/UserContext'; // 引入 UserContext 来获取用户信息
-import img1 from './images/skin2.jpg';
+import img1 from '../images/skin2.jpg';
 import CameraCapture from "./CameraCapture";
 import ImageUploader from '../components/ImageUploader';
+
 
 export default function Home() {
     const [city, setCity] = useState(null);
@@ -43,19 +44,18 @@ export default function Home() {
     };
 
     return (
-        <div className="container-fluid bg-primary hero-header mb-5">
-            <div className="container pt-5">
+        <div className="container-fluid bg-white hero-header mb-5">
+            <div className="container">
                 <div className="row g-5 pt-5">
                     <div className="col-lg-6 align-self-center text-center text-lg-start mb-lg-5">
-                        <div className="btn btn-sm border rounded-pill text-white px-3 mb-3 animated slideInRight">
-                            AI.Tech
-                        </div>
-                        <h1 className="display-4 text-white mb-4 animated slideInRight">
-                            Artificial Intelligence for Your Business
+
+                        <h1 className="display-4 text-black mb-4 animated slideInRight fw-bold">
+                            Intelligent Skin Analysis for Skin Diseases
                         </h1>
-                        <p className="text-white mb-4 animated slideInRight">
-                            Location-based AI services for your business.
-                        </p>
+                        <h4 className="text-black mb-4 animated slideInRight">
+                            Comprehensive Dermatology Solutions: Analytics for Patients, Physicians, and Healthcare
+                            Providers
+                        </h4>
 
                         {/* 如果用户信息存在，则显示用户名 */}
                         {user && user.name ? (
@@ -72,90 +72,128 @@ export default function Home() {
                             <p className="text-white">Fetching your city...</p>
                         )}
 
-                        {/* 保留原有的内容 */}
-                        <div>
-                            <h5>Upload or take photos of your skin condition</h5>
-                            <ImageUploader capturedImage={capturedPhoto}/>
-                        </div>
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
-                        <img src={img1} alt="Skin Condition Example" style={{width: "100%", height: "auto"}}/>
+                        <img
+                            src={img1}
+                            alt="Skin Condition Example"
+                            className="rounded-9"
+                            style={{width: "100%", height: "auto", borderRadius: "15px"}} // Rounded corners
+                        />
                     </div>
-                </div>
 
-                <div className="row g-4 mt-5">
-                    {/* 这里保留您原有的卡片内容 */}
-                    <div className="col-md-4">
-                        <div className="card bg-light">
-                            <div className="card-body text-center">
-                                <h5 className="card-title">City</h5>
-                                <p className="card-text">
-                                    {city ? (
-                                        <p className="text-black">Your current city: {city}</p>
-                                    ) : error ? (
-                                        <p className="text-danger">{error}</p>
-                                    ) : (
-                                        <p className="text-white">Fetching your city...</p>
-                                    )}
-                                </p>
+                    <div className="row g-4 mt-5">
+                        <div className="col-md-4">
+                            <div className="card shadow-sm text-white" style={{
+                                background: "linear-gradient(135deg, #ff7b47, #ffb347)",
+                                borderRadius: "20px",
+                                height: "300px"
+                            }}>
+                                <div
+                                    className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                    <i className="bi bi-house-door-fill mb-3"
+                                       style={{fontSize: "3rem"}}></i> {/* Example icon */}
+                                    <h5 className="card-title">City</h5>
+                                    <p className="card-text mt-2">
+                                        {city ? (
+                                            <p className="text-white">Your current city: {city}</p>
+                                        ) : error ? (
+                                            <p className="text-danger">{error}</p>
+                                        ) : (
+                                            <p className="text-white">Fetching your city...</p>
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div className="col-md-4">
+                            <div className="card shadow-sm text-white" style={{
+                                background: "linear-gradient(135deg, #4a90e2, #7fbbf2)",
+                                borderRadius: "20px",
+                                height: "300px"
+                            }}>
+                                <div
+                                    className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                    <i className="bi bi-cloud-sun-fill mb-3"
+                                       style={{fontSize: "3rem"}}></i> {/* Example icon */}
+                                    <h5 className="card-title">Weather</h5>
+                                    <p className="card-text mt-2">
+                                        {weather.condition && weather.uv ? (
+                                            <>
+                                                <p className="text-white">Condition: {weather.condition}</p>
+                                                <p className="text-white">UV Index: {weather.uv}</p>
+                                                {weather.icon && (
+                                                    <img src={weather.icon} alt="Weather Icon" className="mt-2"/>
+                                                )}
+                                            </>
+                                        ) : error ? (
+                                            <p className="text-danger">Failed to fetch weather data</p>
+                                        ) : (
+                                            <p className="text-white">Fetching weather data...</p>
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div className="col-md-4">
+                            <div className="card shadow-sm text-white" style={{
+                                background: "linear-gradient(135deg, #a166e2, #d3a0f4)",
+                                borderRadius: "20px",
+                                height: "300px"
+                            }}>
+                                <div
+                                    className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                    <i className="bi bi-thermometer-half mb-3"
+                                       style={{fontSize: "3rem"}}></i> {/* Example icon */}
+                                    <h5 className="card-title">Current Temperature</h5>
+                                    <p className="card-text mt-2">
+                                        {weather.temp_c ? (
+                                            <p className="text-white">Temperature: {weather.temp_c}°C</p>
+                                        ) : error ? (
+                                            <p className="text-danger">Failed to fetch temperature data</p>
+                                        ) : (
+                                            <p className="text-white">Fetching temperature data...</p>
+                                        )}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="col-md-4">
-                        <div className="card bg-light">
-                            <div className="card-body text-center">
-                                <h5 className="card-title">Weather</h5>
-                                <p className="card-text">
-                                    {weather.condition && weather.uv ? (
-                                        <>
-                                            <p className="text-black">Condition: {weather.condition}</p>
-                                            <p className="text-black">UV Index: {weather.uv}</p>
-                                            {weather.icon && (
-                                                <img src={weather.icon} alt="Weather Icon"/>
-                                            )}
-                                        </>
-                                    ) : error ? (
-                                        <p className="text-danger">Failed to fetch weather data</p>
-                                    ) : (
-                                        <p className="text-white">Fetching weather data...</p>
-                                    )}
-                                </p>
+                    <div className="row g-5 mt-5">
+                        <div className="col-md-6">
+                            <div>
+                                <div className="card-body text-center">
+                                    <h1>Capture Photo with Webcam</h1>
+                                    <CameraCapture onCapture={handleCapture}/>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="col-md-4">
-                        <div className="card bg-light">
+                    <div className="col-md-6">
+                        <div>
                             <div className="card-body text-center">
-                                <h5 className="card-title">Current Temperature</h5>
-                                <p className="card-text">
-                                    {weather.temp_c ? (
-                                        <p className="text-black">Temperature: {weather.temp_c}°C</p>
-                                    ) : error ? (
-                                        <p className="text-danger">Failed to fetch temperature data</p>
-                                    ) : (
-                                        <p className="text-white">Fetching temperature data...</p>
-                                    )}
-                                </p>
+                                {/*<h5>Upload or take photos of your skin condition</h5>*/}
+                                {/*<ImageUploader capturedImage={capturedPhoto}/>*/}
+                                <ImageUploader capturedImage={capturedPhoto}/>
                             </div>
                         </div>
                     </div>
-                </div>
+                    {/* 当 capturedPhoto 存在时才显示 Upload Image 部分 */}
+                    {capturedPhoto && (
+                        <div>
+                            <h5>Upload the photo you have taken</h5>
+                            <ImageUploader capturedImage={capturedPhoto}/>
+                        </div>
+                    )}
 
-                <div>
-                    <h1>Capture Photo with Webcam</h1>
-                    <CameraCapture onCapture={handleCapture}/>
                 </div>
-
-                {/* 当 capturedPhoto 存在时才显示 Upload Image 部分 */}
-                {capturedPhoto && (
-                    <div>
-                        <h5>Upload the photo you have taken</h5>
-                        <ImageUploader capturedImage={capturedPhoto}/>
-                    </div>
-                )}
 
             </div>
         </div>
