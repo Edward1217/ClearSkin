@@ -23,7 +23,7 @@ const CameraCapture = ({ onCapture }) => {
 
     // Capture the photo
     const takePhoto = () => {
-        const width = 560;
+        const width = 400;
         const height = 320;
 
         let video = videoRef.current;
@@ -55,7 +55,7 @@ const CameraCapture = ({ onCapture }) => {
     return (
         <div className="camera-container">
             <div className="video-container">
-                <video ref={videoRef} autoPlay playsInline></video>
+                <video ref={videoRef} autoPlay playsInline style={{width: '400px', height: '320px'}}></video>
                 <button onClick={takePhoto}>Take Photo</button>
             </div>
 
