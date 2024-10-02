@@ -1,5 +1,5 @@
 const express = require('express');
-const Image = require('../models/Image');
+const Image = require('../models/image');
 const authMiddleware = require('../utils/authMiddleware');  // Middleware for authentication
 const router = express.Router();
 
