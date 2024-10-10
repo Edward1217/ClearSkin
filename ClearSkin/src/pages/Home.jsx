@@ -267,7 +267,7 @@ export default function Home() {
 
                             <div className="row g-5 mt-5">
                                 {/* Place the two sections in the same row */}
-                                <div className="col-md-6" id="capture from camera">
+                                <div className="col-md-6 col-sm-12" id="capture from camera">
                                     <div className="card-body text-center">
                                         <h1>Capture Photo with Webcam</h1>
                                         <CameraCapture onCapture={handleCapture}/>
@@ -277,7 +277,7 @@ export default function Home() {
                                     </div>
                                 </div>
 
-                                <div className="col-md-6" id="upload from local folder">
+                                <div className="col-md-6 col-sm-12" id="upload from local folder">
                                     <header className="text-center card-body">
                                         <h1>Image Upload</h1>
                                         <p className="lead mb-4">Upload an image to preview it below.</p>
