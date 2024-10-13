@@ -71,6 +71,9 @@ export default function Home() {
             setImage(null);
         });
     }
+    const handleDiscard = () =>{
+        setCapturedPhoto(null);
+    }
 
     return (
         <div className="container-fluid bg-white hero-header mb-5">
@@ -82,7 +85,7 @@ export default function Home() {
                             Intelligent Skin Analysis for Skin Diseases
                         </h1>
                         <h4 className="text-black mb-4 animated slideInRight">
-                            Comprehensive Dermatology Solutions: Analytics for Patients, Physicians, and Healthcare
+                            Comprehensive Dermatology Diagnostics for Patients, Physicians, and Healthcare
                             Providers
                         </h4>
 
@@ -273,7 +276,10 @@ export default function Home() {
                                         <CameraCapture onCapture={handleCapture}/>
                                     </div>
                                     <div>
-                                        {capturedPhoto && <ImageUploader capturedImage={capturedPhoto}/>}
+                                        {capturedPhoto && (
+                                            <>
+                                                <ImageUploader capturedImage={capturedPhoto}/>
+                                            </>)}
                                     </div>
                                 </div>
 

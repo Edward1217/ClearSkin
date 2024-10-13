@@ -56,12 +56,12 @@ const CameraCapture = ({ onCapture }) => {
         <div className="camera-container">
             <div className="video-container">
                 <video ref={videoRef} autoPlay playsInline style={{width: '400px', height: '320px'}}></video>
-                <button onClick={takePhoto}>Take Photo</button>
+                <button className ="btn btn-dark" onClick={takePhoto}>Take Photo</button>
             </div>
 
             <div className={'photo-container ' + (hasPhoto ? 'has-photo' : '')}>
                 <canvas ref={canvasRef}></canvas>
-                {hasPhoto && <button onClick={closePhoto}>Close Photo</button>}
+                {hasPhoto && <button className ="btn btn-dark" onClick={closePhoto}>Discard</button>}
             </div>
         </div>
     );
