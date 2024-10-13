@@ -106,14 +106,14 @@ export default function Home() {
                             <p className="text-white">Fetching user info...</p>
                         )}
 
-                        {/* 显示地图 */}
-                        {mapUrl ? (
-                            <img src={mapUrl} alt="Map" className="rounded-9" style={{width: "100%", height: "auto", borderRadius: "15px"}} />
-                        ) : error ? (
-                            <p className="text-danger">{error}</p>
-                        ) : (
-                            <p className="text-white">Fetching your map...</p>
-                        )}
+                        {/*/!* 显示地图 *!/*/}
+                        {/*{mapUrl ? (*/}
+                        {/*    <img src={mapUrl} alt="Map" className="rounded-9" style={{width: "100%", height: "auto", borderRadius: "15px"}} />*/}
+                        {/*) : error ? (*/}
+                        {/*    <p className="text-danger">{error}</p>*/}
+                        {/*) : (*/}
+                        {/*    <p className="text-white">Fetching your map...</p>*/}
+                        {/*)}*/}
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
@@ -136,6 +136,19 @@ export default function Home() {
                                     className="card-body text-center d-flex flex-column justify-content-center align-items-center">
                                     <i className="bi bi-house-door-fill mb-3" style={{fontSize: "3rem"}}></i>
                                     <h5 className="card-title">City</h5>
+                                    {/* Display the map image */}
+                                    {mapUrl ? (
+                                        <img
+                                            src={mapUrl}
+                                            alt="Map"
+                                            className="rounded-9 mb-2" // Add margin-bottom for spacing
+                                            style={{ width: "100%", height: "auto", borderRadius: "15px" }}
+                                        />
+                                    ) : error ? (
+                                        <p className="text-danger">{error}</p>
+                                    ) : (
+                                        <p className="text-white">Fetching your map...</p>
+                                    )}
                                     <p className="card-text mt-2">
                                         {city ? (
                                             <p className="text-white">Map is displayed above</p>
