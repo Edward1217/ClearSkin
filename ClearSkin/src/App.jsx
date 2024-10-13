@@ -6,6 +6,8 @@ import Home from './pages/Home.jsx';
 import SignIn from './pages/SignIn.jsx';
 import About from './pages/About.jsx';
 import Services from './pages/Services.jsx';
+import UserProfile from './pages/UserProfile.jsx'
+import EditProfile from './pages/EditProfile.jsx'
 import { UserProvider } from './context/UserContext.jsx';
 
 const App = () => {
@@ -19,6 +21,8 @@ const App = () => {
                     <Route path="/sign-in" element={<SignIn />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/services" element={<Services />} />
+                    <Route path="/profile" element={<UserProfile />} />
+                    <Route path="/edit-profile" element={<EditProfile />} />
                 </Routes>
             </Router>
         </UserProvider>
