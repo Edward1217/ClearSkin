@@ -1,15 +1,16 @@
 import axios from 'axios';
 
-// Function to get geolocation data from the backend
-const getLocation = async () => {
+// Function to get the Google Maps static map URL based on lat and lng
+const getMapUrl = async (lat, lng) => {
     try {
-        const response = await axios.get(`/api/location`);
+        const response = await axios.get(`/api/location`, {
+            params: { lat, lng },
+        });
         return response.data;
     } catch (error) {
-        console.error('Error fetching location data:', error);
+        console.error('Error fetching map URL:', error);
         throw error;
     }
 };
 
-
-export default { getLocation };
+export default { getMapUrl };
