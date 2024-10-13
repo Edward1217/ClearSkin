@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Navbar, Container, Nav, Dropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
-
+import logo from '../images/logo.jpg';
 const NavbarComponent = () => {
     const { user, setUser } = useContext(UserContext); // 从上下文中获取 user 和 setUser
     const navigate = useNavigate();
@@ -18,15 +18,17 @@ const NavbarComponent = () => {
     };
 
     return (
-        <Navbar sticky="top" bg="dark" variant="dark" expand="lg" className="py-3 px-4">
+        <Navbar sticky="top" bg="white" variant="dark" expand="lg" className="py-3 px-4">
             <Container>
-                <Navbar.Brand as={Link} to="/">Clear Skin</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/" >
+                    <img src={logo} width="80" height="80" className="d-inline-block align-top me-2" alt="Clear Skin Logo" />
+                    </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
-                        <Nav.Link as={Link} to="/">Home</Nav.Link>
-                        <Nav.Link as={Link} to="/about">About</Nav.Link>
-                        <Nav.Link as={Link} to="/services">Services</Nav.Link>
+                        <Nav.Link as={Link} to="/" style={{ color: 'black' }}>Home</Nav.Link>
+                        <Nav.Link as={Link} to="/about" style={{ color: 'black' }}>About</Nav.Link>
+                        <Nav.Link as={Link} to="/services" style={{ color: 'black' }}>Services</Nav.Link>
 
                         {user && user.name ? (
                             <Dropdown alignRight>
@@ -34,14 +36,14 @@ const NavbarComponent = () => {
                                     Welcome, {user.name}
                                 </Dropdown.Toggle>
 
-                                <Dropdown.Menu>
+                                <Dropdown.Menu style={{ color: 'black' }}>
                                     <Dropdown.Item as={Link} to="/profile">Profile</Dropdown.Item>
                                     <Dropdown.Divider />
                                     <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         ) : (
-                            <Nav.Link as={Link} to="/sign-in">Sign In</Nav.Link>
+                            <Nav.Link as={Link} to="/sign-in" style={{ color: 'black' }}>Sign In</Nav.Link>
                         )}
                     </Nav>
                 </Navbar.Collapse>

@@ -46,14 +46,20 @@ const ImageUploader = ({ capturedImage }) => {
     }, [imageUpload, user]);
 
     return (
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
             {!capturedImage && (
-                <input
-                    type="file"
-                    onChange={(e) => setImageUpload(e.target.files[0])}
-                />
+                <>
+                    <label htmlFor="fileInput" className="btn btn-dark">Choose File</label>
+                    <input
+                        type="file"
+                        id="fileInput"
+                        style={{display: "none"}}
+                        onChange={(e) => setImageUpload(e.target.files[0])}
+                    />
+                </>
+
             )}
-            <button onClick={uploadImage}>Upload Image</button>
+            <button className="btn btn-dark" onClick={uploadImage}>Upload Image</button>
             {uploadSuccess && <p>Image uploaded successfully!</p>}
             {error && <p className="text-danger">{error}</p>}
         </div>
@@ -61,3 +67,4 @@ const ImageUploader = ({ capturedImage }) => {
 };
 
 export default ImageUploader;
+
