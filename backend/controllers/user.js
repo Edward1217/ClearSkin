@@ -37,5 +37,19 @@ usersRouter.post("/", async (request, response) => {
     const savedUser = await user.save();
     response.status(201).json(savedUser);
 });
+usersRouter.get('/patients', async (req, res) => {
+    try {
+        // 检查当前用户是否是医生
+        if (req.user.role !== 'doctor') {
+            return res.status(403).json({ error: 'Access denied. Only doctors can view this.' });
+        }
 
+        // 找到该医生的患者（假设你有一种机制来关联医生和患者）
+        const patients = await User.find({ assignedDoctor: req.user._id, role: 'patient' });
+        res.json(patients);
+    } catch (error) {
+        console.error('Error fetching patients:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 module.exports = usersRouter;
