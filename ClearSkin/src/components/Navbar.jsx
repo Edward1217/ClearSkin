@@ -18,11 +18,11 @@ const NavbarComponent = () => {
     };
 
     return (
-        <Navbar sticky="top" bg="white" variant="dark" expand="lg" className="py-3 px-4">
+        <Navbar sticky="top" bg="white"s expand="sm" className="py-3 px-4">
             <Container>
                 <Navbar.Brand as={Link} to="/" >
                     <img src={logo} width="80" height="80" className="d-inline-block align-top me-2" alt="Clear Skin Logo" />
-                    </Navbar.Brand>
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
@@ -31,15 +31,15 @@ const NavbarComponent = () => {
                         <Nav.Link as={Link} to="/services" style={{ color: 'black' }}>Services</Nav.Link>
 
                         {user && user.name ? (
-                            <Dropdown alignRight>
+                            <Dropdown alignRight show>
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Welcome, {user.name}
                                 </Dropdown.Toggle>
 
-                                <Dropdown.Menu style={{ color: 'black' }}>
-                                    <Dropdown.Item as={Link} to="/profile">Profile</Dropdown.Item>
+                                <Dropdown.Menu style={{ backgroundColor: 'black', color: 'white' }}>
+                                    <Dropdown.Item as={Link} to="/profile" style={{ color: 'white' }}>Profile</Dropdown.Item>
                                     <Dropdown.Divider />
-                                    <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleLogout} style={{ color: 'white' }}>Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         ) : (
