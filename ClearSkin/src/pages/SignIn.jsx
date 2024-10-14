@@ -50,6 +50,8 @@ const SignIn = () => {
                     const userInfo = {
                         id: decodedToken.id, // Extracted from the decoded JWT token
                         name: data.name,     // From the backend login response
+                        username: data.username,  // 从后端获取的邮箱
+                        role: data.role,    // 从后端获取的角色
                     };
 
                     localStorage.setItem('token', data.token);
