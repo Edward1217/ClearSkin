@@ -29,13 +29,20 @@ const login = async (credentials) => {
         const response = await axios.post(baseLoginUrl, credentials, {
             headers: { 'Content-Type': 'application/json' }
         });
-        return response.data;
+
+        const { token, username, name, role } = response.data;
+
+        // 将 token 存储到 localStorage 或其他地方，便于后续请求使用
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify({ username, name, role }));
+
+        // 返回用户信息（不再只返回 token）
+        return { token, username, name, role };
     } catch (error) {
         console.error('Login error:', error.response?.data || error.message);
         throw error;
     }
 };
-
 export default {
     signUp,
     login,
