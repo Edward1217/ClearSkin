@@ -124,96 +124,99 @@ export default function Home() {
                             style={{width: "100%", height: "auto", borderRadius: "15px"}} // Rounded corners
                         />
                     </div>
-
-                    <div className="row g-4 mt-5">
-                        <div className="col-md-4">
-                            <div className="card shadow-sm text-white" style={{
-                                background: "linear-gradient(135deg, #ff7b47, #ffb347)",
-                                borderRadius: "20px",
-                                height: "300px"
-                            }}>
-                                <div
-                                    className="card-body text-center d-flex flex-column justify-content-center align-items-center">
-                                    <i className="bi bi-house-door-fill mb-3" style={{fontSize: "3rem"}}></i>
-                                    <h5 className="card-title">City</h5>
-                                    {/* Display the map image */}
-                                    {mapUrl ? (
-                                        <img
-                                            src={mapUrl}
-                                            alt="Map"
-                                            className="rounded-9 mb-2" // Add margin-bottom for spacing
-                                            style={{ width: "100%", height: "auto", borderRadius: "15px" }}
-                                        />
-                                    ) : error ? (
-                                        <p className="text-danger">{error}</p>
-                                    ) : (
-                                        <p className="text-white">Fetching your map...</p>
-                                    )}
-                                    <p className="card-text mt-2">
-                                        {city ? (
-                                            <p className="text-white">Map is displayed above</p>
+                    <div className="container">
+                        <div className="row g-4 mt-5 d-flex justify-content-center">
+                            <div className="col-md-4 col-12">
+                                <div className="card shadow-sm text-white" style={{
+                                    background: "linear-gradient(135deg, #ff7b47, #ffb347)",
+                                    borderRadius: "20px",
+                                    height: "300px"
+                                }}>
+                                    <div
+                                        className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                        <i className="bi bi-house-door-fill mb-3" style={{fontSize: "3rem"}}></i>
+                                        <h5 className="card-title">City</h5>
+                                        {/* Display the map image */}
+                                        {mapUrl ? (
+                                            <img
+                                                src={mapUrl}
+                                                alt="Map"
+                                                className="rounded-9 mb-2" // Add margin-bottom for spacing
+                                                style={{width: "100%", height: "auto", borderRadius: "15px"}}
+                                            />
                                         ) : error ? (
                                             <p className="text-danger">{error}</p>
                                         ) : (
                                             <p className="text-white">Fetching your map...</p>
                                         )}
-                                    </p>
+                                        <p className="card-text mt-2">
+                                            {city ? (
+                                                <p className="text-white">Map is displayed above</p>
+                                            ) : error ? (
+                                                <p className="text-danger">{error}</p>
+                                            ) : (
+                                                <p className="text-white">Fetching your map...</p>
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-4">
+                                <div className="card shadow-sm text-white" style={{
+                                    background: "linear-gradient(135deg, #4a90e2, #7fbbf2)",
+                                    borderRadius: "20px",
+                                    height: "300px"
+                                }}>
+                                    <div
+                                        className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                        <i className="bi bi-cloud-sun-fill mb-3" style={{fontSize: "3rem"}}></i>
+                                        <h5 className="card-title">Weather</h5>
+                                        <p className="card-text mt-2">
+                                            {weather.condition && weather.uv ? (
+                                                <>
+                                                    <p className="text-white">Condition: {weather.condition}</p>
+                                                    <p className="text-white">UV Index: {weather.uv}</p>
+                                                    {weather.icon && (
+                                                        <img src={weather.icon} alt="Weather Icon" className="mt-2"/>
+                                                    )}
+                                                </>
+                                            ) : error ? (
+                                                <p className="text-danger">Failed to fetch weather data</p>
+                                            ) : (
+                                                <p className="text-white">Fetching weather data...</p>
+                                            )}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-4">
+                                <div className="card shadow-sm text-white" style={{
+                                    background: "linear-gradient(135deg, #a166e2, #d3a0f4)",
+                                    borderRadius: "20px",
+                                    height: "300px"
+                                }}>
+                                    <div
+                                        className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                        <i className="bi bi-thermometer-half mb-3" style={{fontSize: "3rem"}}></i>
+                                        <h5 className="card-title">Current Temperature</h5>
+                                        <p className="card-text mt-2">
+                                            {weather.temp_c ? (
+                                                <p className="text-white">Temperature: {weather.temp_c}°C</p>
+                                            ) : error ? (
+                                                <p className="text-danger">Failed to fetch temperature data</p>
+                                            ) : (
+                                                <p className="text-white">Fetching temperature data...</p>
+                                            )}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="col-md-4">
-                            <div className="card shadow-sm text-white" style={{
-                                background: "linear-gradient(135deg, #4a90e2, #7fbbf2)",
-                                borderRadius: "20px",
-                                height: "300px"
-                            }}>
-                                <div
-                                    className="card-body text-center d-flex flex-column justify-content-center align-items-center">
-                                    <i className="bi bi-cloud-sun-fill mb-3" style={{fontSize: "3rem"}}></i>
-                                    <h5 className="card-title">Weather</h5>
-                                    <p className="card-text mt-2">
-                                        {weather.condition && weather.uv ? (
-                                            <>
-                                                <p className="text-white">Condition: {weather.condition}</p>
-                                                <p className="text-white">UV Index: {weather.uv}</p>
-                                                {weather.icon && (
-                                                    <img src={weather.icon} alt="Weather Icon" className="mt-2"/>
-                                                )}
-                                            </>
-                                        ) : error ? (
-                                            <p className="text-danger">Failed to fetch weather data</p>
-                                        ) : (
-                                            <p className="text-white">Fetching weather data...</p>
-                                        )}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-md-4">
-                            <div className="card shadow-sm text-white" style={{
-                                background: "linear-gradient(135deg, #a166e2, #d3a0f4)",
-                                borderRadius: "20px",
-                                height: "300px"
-                            }}>
-                                <div
-                                    className="card-body text-center d-flex flex-column justify-content-center align-items-center">
-                                    <i className="bi bi-thermometer-half mb-3" style={{fontSize: "3rem"}}></i>
-                                    <h5 className="card-title">Current Temperature</h5>
-                                    <p className="card-text mt-2">
-                                        {weather.temp_c ? (
-                                            <p className="text-white">Temperature: {weather.temp_c}°C</p>
-                                        ) : error ? (
-                                            <p className="text-danger">Failed to fetch temperature data</p>
-                                        ) : (
-                                            <p className="text-white">Fetching temperature data...</p>
-                                        )}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+
 
                     <div className="container-fluid bg-white hero-header mb-5">
                         <div className="container">
