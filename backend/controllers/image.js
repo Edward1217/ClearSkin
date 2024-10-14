@@ -30,4 +30,23 @@ router.post('/',async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;  // 获取 URL 中的用户 ID
+        console.log('Fetching images for user:', userId);
+
+        // 通过 userId 找到该用户上传的所有图片
+        const images = await Image.find({ user: userId }).populate('user', 'name username');
+
+        // 打印 images，确保找到的数据是正确的
+        console.log('Found images:', images);
+
+        res.status(200).json(images);
+    } catch (error) {
+        console.error('Error fetching images for user:', error);
+        res.status(500).json({ error: 'Failed to fetch images for user' });
+    }
+});
+
+
 module.exports = router;
