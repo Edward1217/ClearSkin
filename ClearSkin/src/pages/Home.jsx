@@ -20,7 +20,6 @@ export default function Home() {
     const { user } = useUser(); // 从 UserContext 中获取用户信息
     const [image, setImage] = useState(null); // State to hold the uploaded image
     const [imageUpload,setImageUpload] = useState(null);
-    const [uploadStatus, setUploadStatus] = useState("");
 
     useEffect(() => {
         // 获取用户的地理位置
@@ -37,6 +36,7 @@ export default function Home() {
 
                         // 获取天气信息
                         const weatherResponse = await weatherService.getWeather(`${lat},${lng}`);
+                        console.log('Weather API response:', weatherResponse);
                         setWeather({
                             condition: weatherResponse.condition,
                             uv: weatherResponse.uv,
@@ -45,6 +45,7 @@ export default function Home() {
                         });
                     } catch (error) {
                         setError('Failed to fetch data');
+                        console.error('Error fetching weather data:', error);
                     }
                 }, (error) => {
                     setError('Failed to get your location');
@@ -62,17 +63,6 @@ export default function Home() {
         setCapturedPhoto(photoFile);
     };
 
-    const readURL = (event) => {
-        const file = event.target.files[0]; // Get the first file
-        if (file) {
-            const reader = new FileReader(); // Create a new FileReader instance
-            reader.onloadend = () => {
-                setImage(reader.result); // Update state with the image data URL
-            };
-            reader.readAsDataURL(file); // Read the file as a data URL
-        }
-        setImageUpload(file);
-    };
 
     const uploadImage = () => {
         if (imageUpload == null ) return;
@@ -175,7 +165,7 @@ export default function Home() {
                                         <i className="bi bi-cloud-sun-fill mb-3" style={{fontSize: "3rem"}}></i>
                                         <TiWeatherPartlySunny size={40}/>
                                         <p className="card-text mt-2">
-                                            {weather.condition && weather.uv ? (
+                                            {weather.condition  !== null ? (
                                                 <>
                                                     <p className="text-white">Condition: {weather.condition}</p>
                                                     <p className="text-white">UV Index: {weather.uv}</p>
