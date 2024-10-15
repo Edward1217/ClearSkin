@@ -8,7 +8,9 @@ import ImageUploader from '../components/ImageUploader';
 import {ref, uploadBytes} from "firebase/storage";
 import {storage} from "../firebase/firebase.js";
 import {v4} from "uuid";
-
+import { FaTemperatureHigh } from "react-icons/fa";
+import { TiWeatherPartlySunny } from "react-icons/ti";
+import { FaLocationDot } from "react-icons/fa6";
 export default function Home() {
     const [city, setCity] = useState(null);  // 继续用于城市和天气
     const [mapUrl, setMapUrl] = useState(null); // 新增用于存储Google地图URL
@@ -135,7 +137,7 @@ export default function Home() {
                                     <div
                                         className="card-body text-center d-flex flex-column justify-content-center align-items-center">
                                         <i className="bi bi-house-door-fill mb-3" style={{fontSize: "3rem"}}></i>
-                                        <h5 className="card-title">City</h5>
+                                        <FaLocationDot size={40}  className="p-1"/>
                                         {/* Display the map image */}
                                         {mapUrl ? (
                                             <img
@@ -171,7 +173,7 @@ export default function Home() {
                                     <div
                                         className="card-body text-center d-flex flex-column justify-content-center align-items-center">
                                         <i className="bi bi-cloud-sun-fill mb-3" style={{fontSize: "3rem"}}></i>
-                                        <h5 className="card-title">Weather</h5>
+                                        <TiWeatherPartlySunny size={40}/>
                                         <p className="card-text mt-2">
                                             {weather.condition && weather.uv ? (
                                                 <>
@@ -200,7 +202,7 @@ export default function Home() {
                                     <div
                                         className="card-body text-center d-flex flex-column justify-content-center align-items-center">
                                         <i className="bi bi-thermometer-half mb-3" style={{fontSize: "3rem"}}></i>
-                                        <h5 className="card-title">Current Temperature</h5>
+                                        <FaTemperatureHigh size={40} s/>
                                         <p className="card-text mt-2">
                                             {weather.temp_c ? (
                                                 <p className="text-white">Temperature: {weather.temp_c}°C</p>

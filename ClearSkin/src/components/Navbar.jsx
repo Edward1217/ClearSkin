@@ -31,15 +31,15 @@ const NavbarComponent = () => {
                         <Nav.Link as={Link} to="/services" style={{ color: 'black' }}>Services</Nav.Link>
 
                         {user && user.name ? (
-                            <Dropdown alignRight show>
+                            <Dropdown alignRight >
                                 <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                                     Welcome, {user.name}
                                 </Dropdown.Toggle>
 
-                                <Dropdown.Menu style={{ backgroundColor: 'black', color: 'white' }}>
-                                    <Dropdown.Item as={Link} to="/profile" style={{ color: 'white' }}>Profile</Dropdown.Item>
+                                <Dropdown.Menu style={{ backgroundColor: 'white', color: 'black' }}>
+                                    <Dropdown.Item as={Link} to="/profile" style={{ color: 'black' }}>Profile</Dropdown.Item>
                                     <Dropdown.Divider />
-                                    <Dropdown.Item onClick={handleLogout} style={{ color: 'white' }}>Logout</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleLogout} style={{ color: 'black' }}>Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         ) : (
