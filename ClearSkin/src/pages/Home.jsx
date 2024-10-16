@@ -126,15 +126,15 @@ export default function Home() {
                                 }}>
                                     <div
                                         className="card-body text-center d-flex flex-column justify-content-center align-items-center">
-                                        <i className="bi bi-house-door-fill mb-3" style={{fontSize: "3rem"}}></i>
-                                        <FaLocationDot size={40}  className="p-1"/>
+                                        <i className="bi bi-house-door-fill mb-1" style={{fontSize: "3rem"}}></i>
+                                        <FaLocationDot size={40}  className="p-2" />
                                         {/* Display the map image */}
                                         {mapUrl ? (
                                             <img
                                                 src={mapUrl}
                                                 alt="Map"
                                                 className="rounded-9 mb-2" // Add margin-bottom for spacing
-                                                style={{width: "100%", height: "auto", borderRadius: "15px"}}
+                                                style={{ maxWidth: "80%" ,height: "auto",borderRadius: "15px",margin:"0 auto"}}
                                             />
                                         ) : error ? (
                                             <p className="text-danger">{error}</p>
