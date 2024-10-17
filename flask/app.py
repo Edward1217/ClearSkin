@@ -7,21 +7,26 @@ import os
 
 app = Flask(__name__)
 
-# 加载模型
-model_file_path = 'skin_cancer_model.pkl'  # 确保这个模型文件路径正确
+# Load the model
+model_file_path = 'skin_cancer_model.pkl'  # Ensure the model file path is correct
+model = None
 try:
     model = joblib.load(model_file_path)
+    app.logger.info("Model loaded successfully.")
+except FileNotFoundError as e:
+    app.logger.error(f"Model file not found: {e}")
 except Exception as e:
     app.logger.error(f"Error loading model: {e}")
 
-# 图像预处理函数
+
+# Image preprocessing function
 def preprocess_image(image):
-    size = (224, 224)  # 确保尺寸与模型输入一致
-    image = image.resize(size)  # 调整图像尺寸
-    image = image.convert("RGB")  # 强制将图像转换为 RGB 格式，去除 alpha 通道
-    image_array = np.array(image)  # 转换为数组
-    image_array = image_array / 255.0  # 归一化
-    image_flattened = image_array.flatten()  # 展平为一维数组
+    size = (224, 224)  # Ensure the size matches the model input
+    image = image.resize(size)  # Resize the image
+    image = image.convert("RGB")  # Convert to RGB to remove the alpha channel
+    image_array = np.array(image)  # Convert to array
+    image_array = image_array / 255.0  # Normalize the array
+    image_flattened = image_array.flatten()  # Flatten to a 1D array
     return [image_flattened]
 
 
@@ -29,31 +34,38 @@ def preprocess_image(image):
 def index():
     return "Welcome to the Skin Analysis API!"
 
-# 接收图像并通过模型分析
+
+# Analyze endpoint: accept image and make prediction
 @app.route('/analyze', methods=['POST'])
 def analyze():
     if 'image' not in request.files:
         return jsonify({"error": "No image uploaded"}), 400
 
+    if model is None:
+        return jsonify({"error": "Model not loaded"}), 500
+
     try:
         file = request.files['image']
         image = Image.open(file.stream)
 
-        # 预处理图像
+        # Log image details
+        app.logger.info(f"Image received: {file.filename}, format: {image.format}, size: {image.size}")
+
+        # Preprocess the image
         processed_image = preprocess_image(image)
 
-        # 模型预测
+        # Model prediction
         prediction = model.predict(processed_image)[0]
-        class_names = {0: 'Benign', 1: 'Malignant'}  # 假设模型返回的是 0 或 1
+        class_names = {0: 'Benign', 1: 'Malignant'}  # Assuming the model returns 0 or 1
         result = class_names.get(prediction, "Unknown")
 
-        app.logger.info(f"Prediction: {result}")
+        app.logger.info(f"Prediction result: {result}")
         return jsonify({"result": result})
     except Exception as e:
         app.logger.error(f"Error during prediction: {e}")
         return jsonify({"error": "Error analyzing image"}), 500
 
-if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))  # 如果没有找到 PORT 环境变量，默认使用 8000
-    app.run(host='0.0.0.0', port=port, debug=True)
 
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))  # Default to 8000 if no PORT env variable found
+    app.run(host='0.0.0.0', port=port, debug=True)
