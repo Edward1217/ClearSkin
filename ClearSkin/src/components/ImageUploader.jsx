@@ -10,6 +10,8 @@ const ImageUploader = ({ capturedImage }) => {
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [error, setError] = useState(null);
     const { user } = useUser();
+    const [analysisResult, setAnalysisResult] = useState(null);  // 保存分析结果
+    const [isLoading, setIsLoading] = useState(false); // Loading state for feedback
 
     // 当 capturedImage 变化时，自动设置 imageUpload
     useEffect(() => {
@@ -20,6 +22,8 @@ const ImageUploader = ({ capturedImage }) => {
 
     const uploadImage = useCallback(async () => {
         if (!imageUpload) return;
+        setIsLoading(true);  // Set loading to true when upload starts
+        setError(null);  // Clear previous errors
 
         if (!user || !user.id) {
             setError('User not found. Please log in.');
@@ -29,42 +33,51 @@ const ImageUploader = ({ capturedImage }) => {
         try {
             const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
 
-            // 如果 imageUpload 是 File 对象，直接上传
+            // 如果 imageUpload 是 File 对象，直接上传到 Firebase
             await uploadBytes(imageRef, imageUpload);
 
+            // 获取上传图片的 URL
             const imageUrl = await getDownloadURL(imageRef);
 
-            // Send image URL to backend
+            // 发送图片 URL 到后端保存
             await imageService.uploadImageUrl(imageUrl);
 
+            // 将图片文件发送到后端 /analyze 路由进行分析
+            const formData = new FormData();
+            formData.append('image', imageUpload);  // 传入图片文件
+            console.log('FormData: ', formData.get('image'));
+
+            const analysisResponse = await imageService.analyzeImage(formData);  // 发送到 /analyze 路由
+
+            // 将分析结果保存并显示
+            setAnalysisResult(analysisResponse.analysisResult);
             setUploadSuccess(true);
-            setError(null);
         } catch (err) {
             console.error('Error uploading image:', err);
             setError('Error uploading image to backend.');
+        } finally {
+            setIsLoading(false);  // Stop loading when operation is done
         }
     }, [imageUpload, user]);
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
             {!capturedImage && (
                 <>
                     <label htmlFor="fileInput" className="btn btn-dark">Choose File</label>
                     <input
                         type="file"
                         id="fileInput"
-                        style={{display: "none"}}
+                        style={{ display: "none" }}
                         onChange={(e) => setImageUpload(e.target.files[0])}
                     />
                 </>
-
             )}
             <button className="btn btn-dark" onClick={uploadImage}>Upload Image</button>
-            {uploadSuccess && <p>Image uploaded successfully!</p>}
+            {uploadSuccess && <p>Image uploaded successfully! Analysis Result: {analysisResult}</p>}
             {error && <p className="text-danger">{error}</p>}
         </div>
     );
 };
 
 export default ImageUploader;
-
