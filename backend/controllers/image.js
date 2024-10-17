@@ -69,7 +69,7 @@ router.post('/analyze', upload.single('image'), async (req, res) => {
         formData.append('image', fs.createReadStream(filePath));  // 读取文件并附加到 FormData
 
         // 调用 Flask API 进行分析
-        const response = await axios.post('https://clearskin.onrender.com/analyze', formData, {
+        const response = await axios.post('https://clearskin-0c4j.onrender.com/analyze', formData, {
             headers: formData.getHeaders(),
         });
 
