@@ -61,19 +61,25 @@ const ImageUploader = ({ capturedImage }) => {
     }, [imageUpload, user]);
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column',alignItems: 'center' }}>
             {!capturedImage && (
-                <>
-                    <label htmlFor="fileInput" className="btn btn-dark">Choose File</label>
+                <div  className="p-1"style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <label htmlFor="fileInput" className="btn btn-dark" style={{width: '150px'}}>Choose File</label>
                     <input
                         type="file"
                         id="fileInput"
-                        style={{ display: "none" }}
+                        style={{display: "none"}}
                         onChange={(e) => setImageUpload(e.target.files[0])}
                     />
-                </>
+                </div>
+
             )}
-            <button className="btn btn-dark" onClick={uploadImage}>Upload Image</button>
+            <div>
+                <button className="btn btn-dark" onClick={uploadImage}
+                        style={{width: '150px', marginLeft: '10px'}}>Upload Image
+                </button>
+            </div>
+
             {uploadSuccess && <p>Image uploaded successfully! Analysis Result: {analysisResult}</p>}
             {error && <p className="text-danger">{error}</p>}
         </div>
