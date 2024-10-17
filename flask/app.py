@@ -7,9 +7,11 @@ import os
 
 app = Flask(__name__)
 
+logging.basicConfig(level=logging.INFO)
+
 # Image preprocessing function
 def preprocess_image(image):
-    size = (384, 384)  # Ensure the size matches model input
+    size = (224, 224)  # Ensure the size matches model input
     image = image.resize(size)  # Resize the image
     image = image.convert("RGB")  # Force convert the image to RGB, removing alpha channel if exists
     image_array = np.array(image)  # Convert image to numpy array
