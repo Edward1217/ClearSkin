@@ -71,11 +71,14 @@ const ImageUploader = ({ capturedImage }) => {
                         style={{display: "none"}}
                         onChange={(e) => setImageUpload(e.target.files[0])}
                     />
-                    <button className="btn btn-dark" onClick={uploadImage} style={{width: '150px',marginLeft: '10px'}}>Upload Image
-                    </button>
                 </div>
 
             )}
+            <div>
+                <button className="btn btn-dark" onClick={uploadImage}
+                        style={{width: '150px', marginLeft: '10px'}}>Upload Image
+                </button>
+            </div>
 
             {uploadSuccess && <p>Image uploaded successfully! Analysis Result: {analysisResult}</p>}
             {error && <p className="text-danger">{error}</p>}
