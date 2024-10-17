@@ -7,65 +7,56 @@ import os
 
 app = Flask(__name__)
 
-# Load the model
-model_file_path = 'skin_cancer_model.pkl'  # Ensure the model file path is correct
-model = None
-try:
-    model = joblib.load(model_file_path)
-    app.logger.info("Model loaded successfully.")
-except FileNotFoundError as e:
-    app.logger.error(f"Model file not found: {e}")
-except Exception as e:
-    app.logger.error(f"Error loading model: {e}")
-
-
 # Image preprocessing function
 def preprocess_image(image):
-    size = (224, 224)  # Ensure the size matches the model input
+    size = (128, 128)  # Ensure the size matches model input
     image = image.resize(size)  # Resize the image
-    image = image.convert("RGB")  # Convert to RGB to remove the alpha channel
-    image_array = np.array(image)  # Convert to array
-    image_array = image_array / 255.0  # Normalize the array
-    image_flattened = image_array.flatten()  # Flatten to a 1D array
+    image = image.convert("RGB")  # Force convert the image to RGB, removing alpha channel if exists
+    image_array = np.array(image)  # Convert image to numpy array
+    image_array = image_array / 255.0  # Normalize to [0, 1] range
+    image_flattened = image_array.flatten()  # Flatten into a 1D array
     return [image_flattened]
-
 
 @app.route('/')
 def index():
     return "Welcome to the Skin Analysis API!"
 
-
-# Analyze endpoint: accept image and make prediction
+# Image analysis route with lazy model loading
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    if 'image' not in request.files:
-        return jsonify({"error": "No image uploaded"}), 400
-
-    if model is None:
+    model = None  # Load the model on demand
+    model_file_path = 'skin_cancer_model.pkl'
+    try:
+        model = joblib.load(model_file_path)
+        app.logger.info("Model loaded successfully")
+    except Exception as e:
+        app.logger.error(f"Error loading model: {e}")
         return jsonify({"error": "Model not loaded"}), 500
+
+    if 'image' not in request.files:
+        app.logger.error("No image uploaded")
+        return jsonify({"error": "No image uploaded"}), 400
 
     try:
         file = request.files['image']
         image = Image.open(file.stream)
+        app.logger.info(f"Image received: format={image.format}, size={image.size}")
 
-        # Log image details
-        app.logger.info(f"Image received: {file.filename}, format: {image.format}, size: {image.size}")
-
-        # Preprocess the image
+        # Preprocess image
         processed_image = preprocess_image(image)
 
-        # Model prediction
+        # Predict using the model
         prediction = model.predict(processed_image)[0]
-        class_names = {0: 'Benign', 1: 'Malignant'}  # Assuming the model returns 0 or 1
+        class_names = {0: 'Benign', 1: 'Malignant'}  # Assuming model returns 0 or 1
         result = class_names.get(prediction, "Unknown")
 
         app.logger.info(f"Prediction result: {result}")
         return jsonify({"result": result})
+
     except Exception as e:
         app.logger.error(f"Error during prediction: {e}")
         return jsonify({"error": "Error analyzing image"}), 500
 
-
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))  # Default to 8000 if no PORT env variable found
+    port = int(os.getenv("PORT", 8000))  # Default to port 8000 if PORT env variable is not found
     app.run(host='0.0.0.0', port=port, debug=True)
