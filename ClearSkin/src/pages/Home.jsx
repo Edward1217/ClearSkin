@@ -5,21 +5,17 @@ import { useUser } from '../context/UserContext'; // 引入 UserContext 来获�
 import img1 from '../images/skin2.jpg';
 import CameraCapture from "../components/CameraCapture";
 import ImageUploader from '../components/ImageUploader';
-import {ref, uploadBytes} from "firebase/storage";
-import {storage} from "../firebase/firebase.js";
-import {v4} from "uuid";
 import { FaTemperatureHigh } from "react-icons/fa";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { FaLocationDot } from "react-icons/fa6";
+
 export default function Home() {
-    const [city, setCity] = useState(null);  // 继续用于城市和天气
-    const [mapUrl, setMapUrl] = useState(null); // 新增用于存储Google地图URL
+    const [city, setCity] = useState(null);  // 用于存储城市信息
+    const [mapUrl, setMapUrl] = useState(null); // 存储Google地图URL
     const [weather, setWeather] = useState({ condition: null, uv: null, icon: null, temp_c: null });
     const [error, setError] = useState(null);
     const [capturedPhoto, setCapturedPhoto] = useState(null);  // 保存拍摄的照片
     const { user } = useUser(); // 从 UserContext 中获取用户信息
-    const [image, setImage] = useState(null); // State to hold the uploaded image
-    const [imageUpload,setImageUpload] = useState(null);
 
     useEffect(() => {
         // 获取用户的地理位置
@@ -36,7 +32,6 @@ export default function Home() {
 
                         // 获取天气信息
                         const weatherResponse = await weatherService.getWeather(`${lat},${lng}`);
-                        console.log('Weather API response:', weatherResponse);
                         setWeather({
                             condition: weatherResponse.condition,
                             uv: weatherResponse.uv,
@@ -63,27 +58,11 @@ export default function Home() {
         setCapturedPhoto(photoFile);
     };
 
-
-    const uploadImage = () => {
-        if (imageUpload == null ) return;
-        const imageRef = ref(storage,`images/${imageUpload.name + v4()}`);
-        uploadBytes(imageRef,imageUpload).then(()=>{
-            alert("Image Uploaded");
-            setImageUpload(null);
-            setImage(null);
-        });
-    };
-
-    const handleDiscard = () =>{
-        setCapturedPhoto(null);
-    };
-
     return (
         <div className="container-fluid bg-white hero-header mb-5">
             <div className="container">
                 <div className="row g-5 pt-5">
                     <div className="col-lg-6 align-self-center text-center text-lg-start mb-lg-5">
-
                         <h1 className="display-4 text-black mb-4 animated slideInRight fw-bold">
                             Intelligent Skin Analysis for Skin Diseases
                         </h1>
@@ -97,15 +76,6 @@ export default function Home() {
                         ) : (
                             <p className="text-white">Fetching user info...</p>
                         )}
-
-                        {/*/!* 显示地图 *!/*/}
-                        {/*{mapUrl ? (*/}
-                        {/*    <img src={mapUrl} alt="Map" className="rounded-9" style={{width: "100%", height: "auto", borderRadius: "15px"}} />*/}
-                        {/*) : error ? (*/}
-                        {/*    <p className="text-danger">{error}</p>*/}
-                        {/*) : (*/}
-                        {/*    <p className="text-white">Fetching your map...</p>*/}
-                        {/*)}*/}
                     </div>
 
                     <div className="col-lg-6 align-self-center text-center">
@@ -113,9 +83,10 @@ export default function Home() {
                             src={img1}
                             alt="Skin Condition Example"
                             className="rounded-9"
-                            style={{width: "100%", height: "auto", borderRadius: "15px"}} // Rounded corners
+                            style={{ width: "100%", height: "auto", borderRadius: "15px" }}
                         />
                     </div>
+
                     <div className="container">
                         <div className="row g-4 mt-5 d-flex justify-content-center">
                             <div className="col-md-4 col-12">
@@ -124,17 +95,15 @@ export default function Home() {
                                     borderRadius: "20px",
                                     height: "300px"
                                 }}>
-                                    <div
-                                        className="card-body text-center d-flex flex-column justify-content-center align-items-center">
-                                        <i className="bi bi-house-door-fill mb-1" style={{fontSize: "3rem"}}></i>
-                                        <FaLocationDot size={40}  className="p-2" />
+                                    <div className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                        <FaLocationDot size={40} className="p-2" />
                                         {/* Display the map image */}
                                         {mapUrl ? (
                                             <img
                                                 src={mapUrl}
                                                 alt="Map"
-                                                className="rounded-9 mb-2" // Add margin-bottom for spacing
-                                                style={{ maxWidth: "80%" ,height: "auto",borderRadius: "15px",margin:"0 auto"}}
+                                                className="rounded-9 mb-2"
+                                                style={{ maxWidth: "80%", height: "auto", borderRadius: "15px", margin: "0 auto" }}
                                             />
                                         ) : error ? (
                                             <p className="text-danger">{error}</p>
@@ -160,17 +129,15 @@ export default function Home() {
                                     borderRadius: "20px",
                                     height: "300px"
                                 }}>
-                                    <div
-                                        className="card-body text-center d-flex flex-column justify-content-center align-items-center">
-                                        <i className="bi bi-cloud-sun-fill mb-3" style={{fontSize: "3rem"}}></i>
-                                        <TiWeatherPartlySunny size={40}/>
+                                    <div className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                        <TiWeatherPartlySunny size={40} />
                                         <p className="card-text mt-2">
-                                            {weather.condition  !== null ? (
+                                            {weather.condition !== null ? (
                                                 <>
                                                     <p className="text-white">Condition: {weather.condition}</p>
                                                     <p className="text-white">UV Index: {weather.uv}</p>
                                                     {weather.icon && (
-                                                        <img src={weather.icon} alt="Weather Icon" className="mt-2"/>
+                                                        <img src={weather.icon} alt="Weather Icon" className="mt-2" />
                                                     )}
                                                 </>
                                             ) : error ? (
@@ -189,10 +156,8 @@ export default function Home() {
                                     borderRadius: "20px",
                                     height: "300px"
                                 }}>
-                                    <div
-                                        className="card-body text-center d-flex flex-column justify-content-center align-items-center">
-                                        <i className="bi bi-thermometer-half mb-3" style={{fontSize: "3rem"}}></i>
-                                        <FaTemperatureHigh size={40} s/>
+                                    <div className="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                                        <FaTemperatureHigh size={40} />
                                         <p className="card-text mt-2">
                                             {weather.temp_c ? (
                                                 <p className="text-white">Temperature: {weather.temp_c}°C</p>
@@ -206,9 +171,7 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
 
                     <div className="container-fluid bg-white hero-header mb-5">
                         <div className="container">
@@ -216,13 +179,11 @@ export default function Home() {
                                 <div className="col-md-6 col-sm-12" id="capture from camera">
                                     <div className="card-body text-center">
                                         <h1>Capture Photo with Webcam</h1>
-                                        <CameraCapture onCapture={handleCapture}/>
+                                        <CameraCapture onCapture={handleCapture} />
                                     </div>
                                     <div>
                                         {capturedPhoto && (
-                                            <>
-                                                <ImageUploader capturedImage={capturedPhoto}/>
-                                            </>
+                                            <ImageUploader capturedImage={capturedPhoto} />
                                         )}
                                     </div>
                                 </div>
@@ -235,7 +196,7 @@ export default function Home() {
 
                                     <div className="row">
                                         <div className="col-lg-12 mx-auto">
-                                            <ImageUploader image={image} uploadImage={uploadImage}/>
+                                            <ImageUploader image={capturedPhoto} />
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +205,6 @@ export default function Home() {
                     </div>
 
                 </div>
-
             </div>
         </div>
     );
