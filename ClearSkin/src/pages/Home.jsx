@@ -111,8 +111,8 @@ export default function Home() {
                                             <p className="text-white">Fetching your map...</p>
                                         )}
                                         <p className="card-text mt-2">
-                                            {city ? (
-                                                <p className="text-white">Map is displayed above</p>
+                                            {mapUrl ? (
+                                                <p className="text-white"></p>
                                             ) : error ? (
                                                 <p className="text-danger">{error}</p>
                                             ) : (
