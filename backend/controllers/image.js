@@ -1,13 +1,19 @@
 const express = require('express');
+const multer = require('multer');
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 const Image = require('../models/image');
+const FormData = require('form-data');
 const authMiddleware = require('../utils/authMiddleware');  // Middleware for authentication
 const router = express.Router();
+
+// 设置 multer 接收文件
+const upload = multer({ dest: 'uploads/' });
 
 router.post('/',async (req, res) => {
     const { imageUrl } = req.body;  // Only get the imageUrl from the request body
 
-    console.log('Received imageUrl:', imageUrl);
-    console.log('Authenticated user:', req.user);  // Ensure req.user is populated from JWT
 
     if (!imageUrl) {
         return res.status(400).json({ error: 'Image URL is required' });
@@ -48,5 +54,31 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+
+// 处理图片上传并分析
+router.post('/analyze', upload.single('image'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No image file received' });
+    }
+
+    try {
+        const filePath = req.file.path;  // 获取 multer 保存的文件路径
+        console.log('File path received: ', filePath);
+
+        const formData = new FormData();
+        formData.append('image', fs.createReadStream(filePath));  // 读取文件并附加到 FormData
+
+        // 调用 Flask API 进行分析
+        const response = await axios.post('http://127.0.0.1:8000/analyze', formData, {
+            headers: formData.getHeaders(),
+        });
+
+        const result = response.data.result;
+        res.status(200).json({ analysisResult: result });
+    } catch (error) {
+        console.error('Error in image analysis:', error);
+        res.status(500).json({ error: 'Error analyzing image' });
+    }
+});
 
 module.exports = router;

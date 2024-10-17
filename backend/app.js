@@ -13,6 +13,8 @@ const loginRouter = require("./controllers/login");
 const locationRouter = require("./controllers/location");
 const weatherRouter = require("./controllers/weather");
 const imageRouter = require("./controllers/image");
+const caseRouter = require('./controllers/caseController');
+
 app.use(express.static('dist'))
 
 mongoose.set("strictQuery", false);
@@ -39,8 +41,10 @@ app.use("/api/users", usersRouter);
 app.use('/api/location', locationRouter); // No JWT required
 app.use('/api/weather', weatherRouter);   // No JWT required
 
+
 // Protected routes (JWT authentication required)
 app.use('/api/image', authMiddleware, imageRouter); // Apply authMiddleware for /api/image
+app.use('/api/cases', authMiddleware, caseRouter);
 
 // Handle unknown endpoints and errors
 app.use(middleware.unknownEndPoint);
