@@ -15,10 +15,6 @@ except Exception as e:
     app.logger.error(f"Error loading model: {e}")
 
 # 图像预处理函数
-from PIL import Image
-import numpy as np
-
-# 图像预处理函数
 def preprocess_image(image):
     size = (224, 224)  # 确保尺寸与模型输入一致
     image = image.resize(size)  # 调整图像尺寸
