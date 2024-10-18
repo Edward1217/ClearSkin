@@ -27,7 +27,7 @@ const NavbarComponent = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
                         <Nav.Link as={Link} to="/" style={{ color: 'black' }}>Home</Nav.Link>
-                        <Nav.Link as={Link} to="/about" style={{ color: 'black' }}>About</Nav.Link>
+                        <Nav.Link as={Link} to="/Education" style={{ color: 'black' }}>Education</Nav.Link>
                         <Nav.Link href="https://huggingface.co/spaces/tianxiangxing/SkinClear" target="_blank" rel="noopener noreferrer" style={{ color: 'black' }}>Services</Nav.Link>
 
                         {user && user.name ? (

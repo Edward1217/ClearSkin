@@ -80,7 +80,13 @@ const ImageUploader = ({ capturedImage }) => {
                 </button>
             </div>
 
-            {uploadSuccess && <p>Image uploaded successfully! Analysis Result: {analysisResult}</p>}
+            {uploadSuccess && (
+                <div className="alert alert-success mt-3" style={{ maxWidth: '600px', textAlign: 'center', borderRadius: '10px', padding: '20px', border: '1px solid #28a745' }}>
+                    <h5><strong>Image uploaded successfully!</strong></h5>
+                    <p>Your current skin condition appears to be <strong>{analysisResult}</strong>. Please note that this app does not guarantee 100% accuracy.</p>
+                    <p>If you receive a <strong className="text-danger">malignant</strong> result, we strongly recommend consulting a medical professional for further evaluation and guidance.</p>
+                </div>
+            )}
             {error && <p className="text-danger">{error}</p>}
         </div>
     );

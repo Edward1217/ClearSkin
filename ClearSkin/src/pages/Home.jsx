@@ -35,7 +35,7 @@ export default function Home() {
                         setWeather({
                             condition: weatherResponse.condition,
                             uv: weatherResponse.uv,
-                            icon: `http:${weatherResponse.icon}`,
+                            icon: weatherResponse.icon.startsWith('http') ? weatherResponse.icon : `https:${weatherResponse.icon}`,
                             temp_c: weatherResponse.temp_c
                         });
                     } catch (error) {
