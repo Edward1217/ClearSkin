@@ -196,7 +196,7 @@ export default function Home() {
 
                                     <div className="row">
                                         <div className="col-lg-12 mx-auto">
-                                            <ImageUploader image={capturedPhoto} />
+                                            <ImageUploader />
                                         </div>
                                     </div>
                                 </div>

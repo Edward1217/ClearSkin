@@ -59,11 +59,21 @@ const ImageUploader = ({ capturedImage }) => {
             setIsLoading(false);  // Stop loading when operation is done
         }
     }, [imageUpload, user]);
+    const ImageUploaderButton = ({ uploadImage, isLoading }) => {
+        return (
+            <button className="btn btn-dark"
+                    onClick={uploadImage}
+                    disabled={isLoading}
+                    style={{ width: '150px', marginLeft: '10px' }}>
+                {isLoading ? "Uploading..." : "Upload Image"}
+            </button>
+        );
+    };
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column',alignItems: 'center' }}>
             {!capturedImage && (
-                <div  className="p-1"style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <div className="p-1" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <label htmlFor="fileInput" className="btn btn-dark" style={{width: '150px'}}>Choose File</label>
                     <input
                         type="file"
@@ -71,13 +81,21 @@ const ImageUploader = ({ capturedImage }) => {
                         style={{display: "none"}}
                         onChange={(e) => setImageUpload(e.target.files[0])}
                     />
+                    <button className="btn btn-dark" onClick={uploadImage}
+                            style={{width: '150px', marginLeft: '10px'}}>Upload Image
+                    </button>
                 </div>
+
 
             )}
             <div>
-                <button className="btn btn-dark" onClick={uploadImage}
-                        style={{width: '150px', marginLeft: '10px'}}>Upload Image
-                </button>
+                {/*<button className="btn btn-dark" onClick={uploadImage}*/}
+                {/*        style={{width: '150px', marginLeft: '10px'}}>Upload Image*/}
+                {/*</button>*/}
+                {capturedImage && <button className="btn btn-dark" onClick={uploadImage}
+                                          style={{width: '150px', marginLeft: '10px'}}>Upload Image
+                </button>}
+
             </div>
 
             {uploadSuccess && (
