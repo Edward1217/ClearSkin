@@ -160,7 +160,7 @@ export default function Home() {
                                         <FaTemperatureHigh size={40} />
                                         <p className="card-text mt-2">
                                             {weather.temp_c ? (
-                                                <p className="text-white">Temperature: {weather.temp_c}°C</p>
+                                                <p className="text-white">Temperature: {(weather.temp_c * 9/5 + 32).toFixed(0)}°F</p>
                                             ) : error ? (
                                                 <p className="text-danger">Failed to fetch temperature data</p>
                                             ) : (
@@ -173,36 +173,7 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <div className="container-fluid bg-white hero-header mb-5">
-                        <div className="container">
-                            <div className="row g-5 mt-5">
-                                <div className="col-md-6 col-sm-12" id="capture from camera">
-                                    <div className="card-body text-center">
-                                        <h1>Capture Photo with Webcam</h1>
-                                        <CameraCapture onCapture={handleCapture} />
-                                    </div>
-                                    <div>
-                                        {capturedPhoto && (
-                                            <ImageUploader capturedImage={capturedPhoto} />
-                                        )}
-                                    </div>
-                                </div>
 
-                                <div className="col-md-6 col-sm-12" id="upload from local folder">
-                                    <header className="text-center card-body">
-                                        <h1>Image Upload</h1>
-                                        <p className="lead mb-4">Upload an image to preview it below.</p>
-                                    </header>
-
-                                    <div className="row">
-                                        <div className="col-lg-12 mx-auto">
-                                            <ImageUploader />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
             </div>
