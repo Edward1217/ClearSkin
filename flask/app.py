@@ -4,7 +4,6 @@ from PIL import Image
 import numpy as np
 import logging
 import os
-import tensorflow as tf
 
 app = Flask(__name__)
 
@@ -59,43 +58,6 @@ def analyze():
     except Exception as e:
         app.logger.error(f"Error during prediction: {e}")
         return jsonify({"error": "Error analyzing image"}), 500
-
-# New route for the cnn_skin_issues.h5 model
-@app.route('/analyze_cnn', methods=['POST'])
-def analyze_cnn():
-    cnn_model = None  # Load the model on demand
-    cnn_model_file_path = 'cnn_skin_issues.h5'
-    try:
-        cnn_model = tf.keras.models.load_model(cnn_model_file_path)
-        app.logger.info("CNN model loaded successfully")
-    except Exception as e:
-        app.logger.error(f"Error loading CNN model: {e}")
-        return jsonify({"error": "CNN model not loaded"}), 500
-
-    if 'image' not in request.files:
-        app.logger.error("No image uploaded")
-        return jsonify({"error": "No image uploaded"}), 400
-
-    try:
-        file = request.files['image']
-        image = Image.open(file.stream)
-        app.logger.info(f"Image received: format={image.format}, size={image.size}")
-
-        # Preprocess image
-        processed_image = preprocess_image(image)
-
-        # Predict using the CNN model
-        prediction = cnn_model.predict(processed_image)
-        predicted_class = np.argmax(prediction, axis=1)[0]
-        class_names = {0: 'Healthy Skin', 1: 'Skin Issue Detected'}  # Adjust as per the new model's classes
-        result = class_names.get(predicted_class, "Unknown")
-
-        app.logger.info(f"CNN Prediction result: {result}")
-        return jsonify({"result": result})
-
-    except Exception as e:
-        app.logger.error(f"Error during CNN model prediction: {e}")
-        return jsonify({"error": "Error analyzing image with CNN"}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))  # Default to port 8000 if PORT env variable is not found
