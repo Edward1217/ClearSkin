@@ -13,7 +13,11 @@ const ImageSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    modelDiagnosis: {
+        type: String,
+        required: true
+    },
 });
 
 module.exports = mongoose.model('Image', ImageSchema);
