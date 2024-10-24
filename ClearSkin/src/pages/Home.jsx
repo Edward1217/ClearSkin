@@ -3,8 +3,6 @@ import locationService from '../services/locationService';
 import weatherService from '../services/weatherService';
 import { useUser } from '../context/UserContext'; // 引入 UserContext 来获取用户信息
 import img1 from '../images/skin2.jpg';
-import CameraCapture from "../components/CameraCapture";
-import ImageUploader from '../components/ImageUploader';
 import { FaTemperatureHigh } from "react-icons/fa";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { FaLocationDot } from "react-icons/fa6";

@@ -8,76 +8,95 @@ const FormData = require('form-data');
 const authMiddleware = require('../utils/authMiddleware');  // Middleware for authentication
 const router = express.Router();
 
-// 设置 multer 接收文件
+// Set up multer for file handling
 const upload = multer({ dest: 'uploads/' });
 
-router.post('/',async (req, res) => {
-    const { imageUrl } = req.body;  // Only get the imageUrl from the request body
+// Save image URL route
+router.post('/',  async (req, res) => {
+    const { imageUrl, modelDiagnosis } = req.body;  // Now also receiving modelDiagnosis
 
-
-    if (!imageUrl) {
-        return res.status(400).json({ error: 'Image URL is required' });
+    if (!imageUrl || !modelDiagnosis) {
+        return res.status(400).json({ error: 'Image URL and diagnosis are required' });
     }
 
     try {
-        // Create a new Image instance using user from req.user (extracted from JWT)
         const newImage = new Image({
-            imageUrl,   // The image URL as a string
+            imageUrl,
             user: req.user.id,  // Use req.user.id extracted from the JWT token
+            modelDiagnosis,      // Save the diagnosis result
         });
 
-        await newImage.save();  // Save to database
-        console.log('Image URL saved to the database');
-
-        res.status(201).json({ message: 'Image URL saved successfully!' });
+        await newImage.save();
+        console.log('Image URL and diagnosis saved to the database');
+        res.status(201).json({ message: 'Image URL and diagnosis saved successfully!' });
     } catch (error) {
-        console.error('Error saving image URL:', error);
-        res.status(500).json({ error: 'Server error while saving image URL' });
+        console.error('Error saving image URL and diagnosis:', error);
+        res.status(500).json({ error: 'Server error while saving image URL and diagnosis' });
     }
 });
 
-router.get('/:id', async (req, res) => {
-    try {
-        const userId = req.params.id;  // 获取 URL 中的用户 ID
-        console.log('Fetching images for user:', userId);
-
-        // 通过 userId 找到该用户上传的所有图片
-        const images = await Image.find({ user: userId }).populate('user', 'name username');
-
-        // 打印 images，确保找到的数据是正确的
-        console.log('Found images:', images);
-
-        res.status(200).json(images);
-    } catch (error) {
-        console.error('Error fetching images for user:', error);
-        res.status(500).json({ error: 'Failed to fetch images for user' });
-    }
-});
-
-
-// 处理图片上传并分析
-router.post('/analyze', upload.single('image'), async (req, res) => {
+router.post('/analyze',  upload.single('image'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No image file received' });
     }
 
     try {
-        const filePath = req.file.path;  // 获取 multer 保存的文件路径
+        const filePath = req.file.path;
         console.log('File path received: ', filePath);
 
         const formData = new FormData();
-        formData.append('image', fs.createReadStream(filePath));  // 读取文件并附加到 FormData
+        formData.append('image', fs.createReadStream(filePath));
 
-        // 调用 Flask API 进行分析
+        // Call the first model API for analysis
         const response = await axios.post('https://clearskin-0c4j.onrender.com/analyze', formData, {
             headers: formData.getHeaders(),
         });
 
         const result = response.data.result;
-        res.status(200).json({ analysisResult: result });
+        console.log('First model result:', result);
+
+        let finalDiagnosis = result;
+
+        // If the result is Benign, call the second model for further diagnosis
+        if (result === 'Benign') {
+            console.log('Running second model for further diagnosis...');
+            const secondResponse = await axios.post('https://clearskin-0c4j.onrender.com/analyze_cnn', formData, {
+                headers: formData.getHeaders(),
+            });
+
+            const secondResult = secondResponse.data.result;
+            console.log('Second model result:', secondResult);
+            finalDiagnosis += ` | Second Diagnosis: ${secondResult}`;
+        }
+
+        // Save the image URL and final diagnosis to the database only once
+        const imageUrl = `/uploads/${req.file.filename}`;
+        const newImage = new Image({
+            imageUrl,
+            user: req.user.id,
+            modelDiagnosis: finalDiagnosis
+        });
+
+        await newImage.save();  // Ensure the image and diagnosis are only saved once
+        res.status(200).json({ analysisResult: finalDiagnosis });
     } catch (error) {
         console.error('Error in image analysis:', error);
         res.status(500).json({ error: 'Error analyzing image' });
+    }
+});
+
+
+router.get('/:id',  async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const images = await Image.find({ user: userId }).populate('user', 'name username');
+        if (!images.length) {
+            return res.status(404).json({ message: 'No images found for this user' });
+        }
+        res.status(200).json(images);
+    } catch (error) {
+        console.error('Error fetching images for user:', error);
+        res.status(500).json({ error: 'Failed to fetch images for user' });
     }
 });
 
