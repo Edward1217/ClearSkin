@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/UserContext';
-import { Container, Card, Button } from 'react-bootstrap';
+import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 const UserProfile = () => {
@@ -65,12 +65,21 @@ const UserProfile = () => {
                     {filteredImages.length > 0 ? (
                         <div className="image-gallery">
                             {filteredImages.map(image => (
-                                <div key={image._id} className="image-item">
-                                    {/* 输出图片 URL 以调试 */}
-                                    <img src={image.imageUrl} alt="Uploaded" style={{ width: '150px', marginRight: '10px' }} />
-                                    <p>Uploaded by: {image.user.name} ({image.user.username})</p>
-                                    <p>Uploaded at: {new Date(image.createdAt).toLocaleString()}</p>
-                                </div>
+                                <Row key={image._id} className="mb-4"> {/* Add Row with margin for spacing */}
+                                    <Col xs={12} md={4}> {/* First column for the image */}
+                                        <img
+                                            src={image.imageUrl}
+                                            alt="Uploaded"
+                                            style={{ width: '100%', height: 'auto' }}
+                                        />
+                                    </Col>
+                                    <Col xs={6} md={4}> {/* Second column for uploader info */}
+                                        <p><strong>Uploaded by:</strong> {image.user.name} ({image.user.username})</p>
+                                    </Col>
+                                    <Col xs={6} md={4}> {/* Third column for upload time */}
+                                        <p><strong>Uploaded at:</strong> {new Date(image.createdAt).toLocaleString()}</p>
+                                    </Col>
+                                </Row>
                             ))}
                         </div>
                     ) : (
