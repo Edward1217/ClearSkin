@@ -70,14 +70,10 @@ router.post('/analyze',  upload.single('image'), async (req, res) => {
         }
 
         // Save the image URL and final diagnosis to the database only once
-        const imageUrl = `/uploads/${req.file.filename}`;
-        const newImage = new Image({
-            imageUrl,
-            user: req.user.id,
-            modelDiagnosis: finalDiagnosis
-        });
 
-        await newImage.save();  // Ensure the image and diagnosis are only saved once
+
+
+          // Ensure the image and diagnosis are only saved once
         res.status(200).json({ analysisResult: finalDiagnosis });
     } catch (error) {
         console.error('Error in image analysis:', error);
