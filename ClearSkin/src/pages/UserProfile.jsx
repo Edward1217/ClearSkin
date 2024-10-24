@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/UserContext';
-import { Container, Card, Button, Spinner, Row, Col, Alert } from 'react-bootstrap';
+import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 const UserProfile = () => {
@@ -81,29 +81,32 @@ const UserProfile = () => {
                         <strong>Role:</strong> {user.role || 'N/A'} <br />
                     </Card.Text>
 
-                    {/* 显示图片和上传者信息 */}
-                    {validImages.length > 0 ? (
-                        <Row className="mt-4">
-                            {validImages.map(image => (
-                                <Col key={image._id} xs={12} md={6} lg={4} className="mb-4">
-                                    <Card>
-                                        <Card.Img variant="top" src={image.imageUrl} alt="Uploaded" />
-                                        <Card.Body>
-                                            <Card.Text>
-                                                <strong>Uploaded by:</strong> {image.user.name} ({image.user.username}) <br />
-                                                <strong>Uploaded at:</strong> {new Date(image.createdAt).toLocaleString()} <br />
-                                                <strong>Diagnosis:</strong> {image.modelDiagnosis || 'N/A'}
-                                            </Card.Text>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
+                    {/* 显示图片及上传者信息 */}
+                    {filteredImages.length > 0 ? (
+                        <div className="image-gallery">
+                            {filteredImages.map(image => (
+                                <Row key={image._id} className="mb-4"> {/* Add Row with margin for spacing */}
+                                    <Col xs={12} md={4}> {/* First column for the image */}
+                                        <img
+                                            src={image.imageUrl}
+                                            alt="Uploaded"
+                                            style={{ width: '100%', height: 'auto' }}
+                                        />
+                                    </Col>
+                                    <Col xs={6} md={4}> {/* Second column for uploader info */}
+                                        <p><strong>Uploaded by:</strong> {image.user.name} ({image.user.username})</p>
+                                    </Col>
+                                    <Col xs={6} md={4}> {/* Third column for upload time */}
+                                        <p><strong>Uploaded at:</strong> {new Date(image.createdAt).toLocaleString()}</p>
+                                    </Col>
+                                </Row>
                             ))}
-                        </Row>
+                        </div>
                     ) : (
-                        <Alert variant="info" className="mt-3">No images found.</Alert>
+                        <p>No images found.</p>
                     )}
 
-                    <Button variant="primary" className="mt-3">Edit Profile</Button>
+                    <Button variant="primary">Edit Profile</Button>
                 </Card.Body>
             </Card>
         </Container>
