@@ -70,12 +70,6 @@ export default function Home() {
                                 Comprehensive Dermatology Diagnostics for Patients, Physicians, and Healthcare Providers
                             </h4>
 
-                            {/* Display the username if available */}
-                            {user && user.name ? (
-                                <p className="text-black mt-0">Welcome, {user.name}!</p>
-                            ) : (
-                                <p className="text-black mt-0">Fetching user info...</p>
-                            )}
                         </div>
 
                         <div className="col-lg-6 align-self-center text-center">
@@ -89,7 +83,7 @@ export default function Home() {
                     </div>
 
 
-                    <div className="container">
+                    <div className="container mb-5">
                         <div className="row g-4 mt-5 d-flex justify-content-center">
 
                             <div className="col-md-4 col-12">
